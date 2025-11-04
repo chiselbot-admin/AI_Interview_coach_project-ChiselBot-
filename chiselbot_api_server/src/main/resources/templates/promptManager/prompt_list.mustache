@@ -1,0 +1,91 @@
+{{> layout/header }}
+<body id="page-top">
+<div id="wrapper">
+    {{> layout/sidebar }}
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            {{> layout/topbar }}
+
+            <div class="container mt-5">
+                <h2 class="mb-4 text-center fw-bold">{{level}} 프롬프트 버전 목록</h2>
+
+                <div class="table-container">
+                    <table class="table table-sm table-hover align-middle">
+                        <thead>
+                        <tr class="text-center">
+                            <th style="width:10%;">ID</th>
+                            <th style="width:15%;">버전</th>
+                            <th style="width:15%;">활성화</th>
+                            <th style="width:40%;">본문 일부</th>
+                            <th style="width:20%;">관리</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#prompts}}
+                            <tr class="text-center">
+                                <td>{{id}}</td>
+                                <td>{{versionName}}</td>
+                                <td>
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           onchange="toggleActive({{id}}, this.checked)"
+                                           {{#isActive}}checked{{/isActive}}>
+                                </td>
+                                <td class="text-ellipsis">{{promptBody}}</td>
+                                <td>
+                                    {{#isActive}}
+                                        <a href="/admin/prompts/detail/{{id}}" class="btn btn-sm btn-outline-primary">상세보기</a>
+                                    {{/isActive}}
+                                    {{^isActive}}
+                                        <span class="text-muted small">비활성</span>
+                                    {{/isActive}}
+                                </td>
+                            </tr>
+                        {{/prompts}}
+                        {{^prompts}}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">등록된 프롬프트가 없습니다.</td>
+                            </tr>
+                        {{/prompts}}
+                        </tbody>
+                    </table>
+
+                    <div class="text-center mt-3">
+                        <a href="/admin/prompts" class="btn btn-secondary btn-sm">← 목록으로</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{> layout/footer }}
+    </div>
+</div>
+
+<style>
+    .table-container {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        padding: 15px;
+    }
+    .text-ellipsis {
+        max-width: 350px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .table td {
+        font-size: 0.9rem;
+    }
+</style>
+
+<script>
+    function toggleActive(id, active) {
+      fetch(`/admin/prompts/toggle/${id}?active=${active}`, { method: 'POST' })
+        .then(res => {
+            if (res.ok) location.reload();
+            else alert("변경 실패");
+        });
+    }
+</script>
+</body>
+</html>

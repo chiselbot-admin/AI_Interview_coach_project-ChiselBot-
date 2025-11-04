@@ -1,0 +1,90 @@
+{{> layout/header }}
+<body id="page-top">
+<div id="wrapper">
+    {{> layout/sidebar }}
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            {{> layout/topbar }}
+
+            <!-- 메인 컨테이너 -->
+            <div class="container mt-5">
+                <h2 class="mb-4 text-center fw-bold">프롬프트 관리</h2>
+
+                <div class="table-container">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="page-info">레벨별 활성화된 프롬프트 목록</div>
+                    </div>
+
+                    <table class="table table-sm table-hover align-middle">
+                        <thead>
+                        <tr class="text-center">
+                            <th style="width: 33%;">레벨</th>
+                            <th style="width: 33%;">현재 버전</th>
+                            <th style="width: 34%;">관리</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#activePrompts}}
+                            <tr class="text-center">
+                                <td><strong>{{level}}</strong></td>
+                                <td>{{versionName}}</td>
+                                <td>
+                                    <a href="/admin/prompts/list?level={{level}}"
+                                    class="btn btn-sm btn-outline-primary me-1">버전</a>
+                                    {{#isActive}}
+                                        <a href="/admin/prompts/detail/{{id}}"
+                                           class="btn btn-sm btn-outline-secondary">상세</a>
+                                    {{/isActive}}
+                                </td>
+                            </tr>
+                        {{/activePrompts}}
+
+                        {{^activePrompts}}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">
+                                    활성화된 프롬프트가 없습니다.
+                                </td>
+                            </tr>
+                        {{/activePrompts}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {{> layout/footer }}
+    </div>
+</div>
+
+<!-- 스타일 -->
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .table-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        padding: 15px;
+        margin-top: 20px;
+        font-size: 0.9rem; /* ✅ 전체 글자 크기 살짝 축소 */
+    }
+    .table th {
+        background-color: #f1f3f5;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .table td {
+        padding: 0.5rem 0.3rem; /* ✅ 셀 간격 줄이기 */
+    }
+    .btn-sm {
+        padding: 0.25rem 0.4rem;
+        font-size: 0.75rem;
+    }
+    .page-info {
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+</style>
+
+</body>
+</html>

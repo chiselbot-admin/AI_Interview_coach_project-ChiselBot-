@@ -4,8 +4,9 @@ import com.coach.chiselbot.domain.admin.Admin;
 import com.coach.chiselbot.domain.admin.AdminRepository;
 import com.coach.chiselbot.domain.interview_category.InterviewCategory;
 import com.coach.chiselbot.domain.interview_category.InterviewCategoryRepository;
+import com.coach.chiselbot.domain.interview_coach.prompt.Prompt;
+import com.coach.chiselbot.domain.interview_coach.prompt.PromptRepository;
 import com.coach.chiselbot.domain.interview_question.InterviewLevel;
-import com.coach.chiselbot.domain.interview_question.InterviewQuestion;
 import com.coach.chiselbot.domain.interview_question.InterviewQuestionRepository;
 import com.coach.chiselbot.domain.interview_question.InterviewQuestionService;
 import com.coach.chiselbot.domain.interview_question.dto.QuestionRequest;
@@ -29,6 +30,8 @@ public class AdminDataLoader implements CommandLineRunner {
     private final InterviewQuestionRepository questionRepository;
     private final MenuInfoRepository menuInfoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PromptRepository promptRepository;
+
     // 서비스 주입
     private final InterviewQuestionService interviewQuestionService;
 
@@ -126,7 +129,7 @@ public class AdminDataLoader implements CommandLineRunner {
                     .menuName("1:1문의 관리")
                     .menuCode("ADMIN_INQUIRY")
                     .urlPath("/admin/inquiries")
-                    .menuOrder(3)
+                    .menuOrder(4)
                     .description("1:1 문의 관리 ")
                     //.parent(dashboard) // 부모 연결 가능
                     .build());
@@ -135,10 +138,75 @@ public class AdminDataLoader implements CommandLineRunner {
                     .menuName("공지사항 관리")
                     .menuCode("NOTICE")
                     .urlPath("/admin/notice")
-                    .menuOrder(4)
+                    .menuOrder(5)
                     .description("공지사항 관리")
                     //.parent(dashboard) // 부모 연결 가능
                     .build());
+            MenuInfo promptMenu = menuInfoRepository.save(MenuInfo.builder()
+                    .menuName("프롬프트 관리")
+                    .menuCode("PROMPT")
+                    .urlPath("/admin/prompts")
+                    .menuOrder(3)
+                    .description("프롬프트 관리")
+                    //.parent(dashboard) // 부모 연결 가능
+                    .build());
         }
+
+        // 프롬프트 더미
+        Prompt prompt = new Prompt();
+        prompt.setIsActive(true);
+        prompt.setLevel(InterviewLevel.LEVEL_1);
+        prompt.setVersionName("v1");
+        prompt.setPromptBody("너는 기술 면접 코치이다.\n" +
+                "        아래의 문제, 사용자의 답변, 코사인유사도 점수를 보고\n" +
+                "        JSON 형식으로 간결한 피드백을 작성하라.\n" +
+                "\n" +
+                "        규칙:\n" +
+                "        1. 출력은 반드시 JSON 형식으로 해야 한다.\n" +
+                "        2. 항상 아래 다섯 개의 필드를 모두 포함하라:\n" +
+                "            - \"feedback\": 사용자의 답변에 대한 간결한 한문장 평가\n" +
+                "            - \"hint\": similarity < 0.8 일때만 작성, 엄청 짧은 한문장 힌트문구\n" +
+                "            - \"userAnswer\": 내용은 비워둔다\n" +
+                "            - \"questionId\": 내용은 비워둔다\n" +
+                "            - \"similarity\": 입력받은 유사도 값 그대로 출력.\n" +
+                "        3. 유사도(similarity)가 높을수록 칭찬 위주로, 낮을수록 보완점 위주로 작성한다.\n" +
+                "        4. 불필요한 설명, JSON 밖의 문장은 절대 포함하지 마라.\n" +
+                "        5. \"feedback\"과 \"hint\" 문장은 모두 **'~요'로 끝나는 해요체 말투**로 작성한다.\n" +
+                "\n" +
+                "        ---\n" +
+                "        문제: %s\n" +
+                "        사용자의 답변: %s\n" +
+                "        코사인유사도: %.2f\n" +
+                "        ---\n" +
+                "        JSON:");
+        Prompt prompt2 = new Prompt();
+        prompt2.setIsActive(false);
+        prompt2.setLevel(InterviewLevel.LEVEL_1);
+        prompt2.setVersionName("v2");
+        prompt2.setPromptBody("너는 기술 면접 코치이다.\n" +
+                "        아래의 문제, 사용자의 답변, 코사인유사도 점수를 보고\n" +
+                "        JSON 형식으로 간결한 피드백을 작성하라.\n" +
+                "\n" +
+                "        규칙:\n" +
+                "        1. 출력은 반드시 JSON 형식으로 해야 한다.\n" +
+                "        2. 항상 아래 다섯 개의 필드를 모두 포함하라:\n" +
+                "            - \"feedback\": 사용자의 답변에 대한 간결한 한문장 평가\n" +
+                "            - \"hint\": similarity < 0.8 일때만 작성, 엄청 짧은 한문장 힌트문구\n" +
+                "            - \"userAnswer\": 내용은 비워둔다\n" +
+                "            - \"questionId\": 내용은 비워둔다\n" +
+                "            - \"similarity\": 입력받은 유사도 값 그대로 출력.\n" +
+                "        3. 유사도(similarity)가 높을수록 칭찬 위주로, 낮을수록 보완점 위주로 작성한다.\n" +
+                "        4. 불필요한 설명, JSON 밖의 문장은 절대 포함하지 마라.\n" +
+                "        5. \"feedback\"과 \"hint\" 문장은 모두 **'~요'로 끝나는 해요체 말투**로 작성한다.\n" +
+                "\n" +
+                "        ---\n" +
+                "        문제: %s\n" +
+                "        사용자의 답변: %s\n" +
+                "        코사인유사도: %.2f\n" +
+                "        ---\n" +
+                "        JSON:");
+
+        promptRepository.save(prompt);
+        promptRepository.save(prompt2);
     }
 }
