@@ -18,7 +18,7 @@ class AuthApiService {
       final Response<Map<String, dynamic>> response =
           await _authClient.dio.post(
         path,
-        data: request.toJson(), // Dio는 data 필드를 자동으로 JSON으로 직렬화
+        data: request.toJson(),
       );
 
       // Dio는 200 응답일 때만 try 블록을 실행
@@ -30,18 +30,11 @@ class AuthApiService {
         _apiService.setToken(authResult.token);
       }
       return authResult;
-      // // 3. 확정된 파싱 로직: CommonResponseDto의 data 필드에서 순수한 토큰 문자열 추출
-      // final String token = responseData['data'] as String; //
-      // // 4. 핵심: 기존 ApiService에 토큰 저장 (이후 모든 http 요청에 Authorization 헤더 자동 추가)
-      // _apiService.setToken(token); //
-      // return token;
     } on DioException catch (e) {
-      // DioException을 사용하여 서버 에러 처리 (400, 401 등)
       final responseData = e.response?.data;
       final String errorMessage =
           responseData?['message'] ?? '알 수 없는 오류가 발생했습니다.';
 
-      // 확정된 서버 예외 메시지 기반으로 throw
       if (errorMessage.contains('가입되지 않은 이메일입니다') ||
           errorMessage.contains('잘못된 비밀번호 입니다')) {
         throw Exception(errorMessage);
@@ -49,6 +42,70 @@ class AuthApiService {
       throw Exception('로그인 실패: [${e.response?.statusCode}] $errorMessage');
     } catch (e) {
       rethrow;
+    }
+  }
+
+  // 이메일 인증 코드 발송
+  Future<void> sendEmailVerification({required String email}) async {
+    const String path = '/api/auth/email/send';
+
+    try {
+      await _authClient.dio.post(
+        path,
+        data: {'email': email},
+      );
+    } on DioException catch (e) {
+      final responseData = e.response?.data;
+      final String errorMessage =
+          responseData?['message'] ?? '인증번호 전송에 실패했습니다.';
+      throw Exception(errorMessage);
+    }
+  }
+
+  // 이메일 인증 코드 확인
+  Future<void> verifyEmailCode({
+    required String email,
+    required String code,
+  }) async {
+    const String path = '/api/auth/email/verify';
+
+    try {
+      await _authClient.dio.post(
+        path,
+        data: {
+          'email': email,
+          'code': code,
+        },
+      );
+    } on DioException catch (e) {
+      final responseData = e.response?.data;
+      final String errorMessage =
+          responseData?['message'] ?? '인증번호 확인에 실패했습니다.';
+      throw Exception(errorMessage);
+    }
+  }
+
+  // 회원가입
+  Future<void> signUp({
+    required String email,
+    required String password,
+    required String name,
+  }) async {
+    const String path = '/api/users/signup';
+
+    try {
+      await _authClient.dio.post(
+        path,
+        data: {
+          'email': email,
+          'password': password,
+          'name': name,
+        },
+      );
+    } on DioException catch (e) {
+      final responseData = e.response?.data;
+      final String errorMessage = responseData?['message'] ?? '회원가입에 실패했습니다.';
+      throw Exception(errorMessage);
     }
   }
 }

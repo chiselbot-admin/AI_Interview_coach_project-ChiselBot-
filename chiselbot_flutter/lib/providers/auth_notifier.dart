@@ -3,19 +3,31 @@ import 'package:flutter/foundation.dart';
 
 import '../models/auth_state.dart';
 import '../models/user_model.dart';
+import '../repositories/auth_repository.dart';
 import '../repositories/i_auth_repository.dart';
-import '../repositories/dummy_auth_repository.dart';
+import '../services/api_service.dart';
+import '../services/auth_api_service.dart';
+import '../services/auth_client.dart';
 
-// =======================================================
-// 1. IAuthRepository Provider (기존과 동일, 재사용)
-// =======================================================
-final authRepositoryProvider = Provider<IAuthRepository>((ref) {
-  return DummyAuthRepository();
+// 1. AuthClient Provider
+final authClientProvider = Provider<AuthClient>((ref) {
+  return AuthClient();
 });
 
-// =======================================================
-// 2. AuthState를 관리하는 Notifier Provider
-// =======================================================
+// 2. AuthApiService Provider
+final authApiServiceProvider = Provider<AuthApiService>((ref) {
+  final apiService = ApiService('http://10.0.2.2:8080');
+  final authClient = ref.watch(authClientProvider);
+  return AuthApiService(apiService, authClient);
+});
+
+// 3. IAuthRepository Provider
+final authRepositoryProvider = Provider<IAuthRepository>((ref) {
+  final authApiService = ref.watch(authApiServiceProvider);
+  return AuthRepository(authApiService);
+});
+
+// 4. AuthState를 관리하는 Notifier Provider
 final authNotifierProvider =
     StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final repository = ref.watch(authRepositoryProvider);
@@ -57,9 +69,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       // 3. 사용자 정보 생성 (실제로는 서버에서 받아옴)
       final user = UserModel(
         email: email,
-        password: '', // 보안상 저장하지 않음
-        phoneNumber: '', // 서버에서 받아온 정보로 채워야 함
-        name: result.name ?? email, // 서버에서 받아온 정보로 채워야 함
+        password: '',
+        phoneNumber: '',
+        name: result.name!,
         userId: result.userId,
       );
 
