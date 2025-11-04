@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 
-import '../models/auth_result_model.dart';
-import '../models/find_auth_data.dart';
+import '../models/auth/auth_result_model.dart';
+import '../models/auth/find_auth_data.dart';
 import '../models/user_model.dart';
 import 'i_auth_repository.dart';
 

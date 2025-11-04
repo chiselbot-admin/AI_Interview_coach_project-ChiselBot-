@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../models/find_auth_data.dart';
+import '../models/auth/find_auth_data.dart';
 import '../providers/find_auth_notifier.dart';
 import '../widgets/auth/find_id_form.dart';
 import '../widgets/auth/find_pw_form.dart';

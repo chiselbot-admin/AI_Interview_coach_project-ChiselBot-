@@ -1,5 +1,5 @@
-import '../models/auth_result_model.dart';
-import '../models/find_auth_data.dart';
+import '../models/auth/auth_result_model.dart';
+import '../models/auth/find_auth_data.dart';
 import '../models/user_model.dart';
 
 abstract class IAuthRepository {

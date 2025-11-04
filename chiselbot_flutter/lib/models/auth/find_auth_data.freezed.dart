@@ -27,6 +27,8 @@ mixin _$FindAuthState {
   String? get foundId => throw _privateConstructorUsedError;
   String? get resetToken => throw _privateConstructorUsedError;
   String? get inputContact => throw _privateConstructorUsedError;
+  String? get errorMessage => throw _privateConstructorUsedError;
+  String? get successMessage => throw _privateConstructorUsedError;
 
   /// Serializes this FindAuthState to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -51,7 +53,9 @@ abstract class $FindAuthStateCopyWith<$Res> {
       AuthType? currentAuthType,
       String? foundId,
       String? resetToken,
-      String? inputContact});
+      String? inputContact,
+      String? errorMessage,
+      String? successMessage});
 }
 
 /// @nodoc
@@ -76,6 +80,8 @@ class _$FindAuthStateCopyWithImpl<$Res, $Val extends FindAuthState>
     Object? foundId = freezed,
     Object? resetToken = freezed,
     Object? inputContact = freezed,
+    Object? errorMessage = freezed,
+    Object? successMessage = freezed,
   }) {
     return _then(_value.copyWith(
       isLoading: null == isLoading
@@ -106,6 +112,14 @@ class _$FindAuthStateCopyWithImpl<$Res, $Val extends FindAuthState>
           ? _value.inputContact
           : inputContact // ignore: cast_nullable_to_non_nullable
               as String?,
+      errorMessage: freezed == errorMessage
+          ? _value.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      successMessage: freezed == successMessage
+          ? _value.successMessage
+          : successMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -125,7 +139,9 @@ abstract class _$$FindAuthStateImplCopyWith<$Res>
       AuthType? currentAuthType,
       String? foundId,
       String? resetToken,
-      String? inputContact});
+      String? inputContact,
+      String? errorMessage,
+      String? successMessage});
 }
 
 /// @nodoc
@@ -148,6 +164,8 @@ class __$$FindAuthStateImplCopyWithImpl<$Res>
     Object? foundId = freezed,
     Object? resetToken = freezed,
     Object? inputContact = freezed,
+    Object? errorMessage = freezed,
+    Object? successMessage = freezed,
   }) {
     return _then(_$FindAuthStateImpl(
       isLoading: null == isLoading
@@ -178,6 +196,14 @@ class __$$FindAuthStateImplCopyWithImpl<$Res>
           ? _value.inputContact
           : inputContact // ignore: cast_nullable_to_non_nullable
               as String?,
+      errorMessage: freezed == errorMessage
+          ? _value.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      successMessage: freezed == successMessage
+          ? _value.successMessage
+          : successMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -192,7 +218,9 @@ class _$FindAuthStateImpl implements _FindAuthState {
       this.currentAuthType,
       this.foundId,
       this.resetToken,
-      this.inputContact});
+      this.inputContact,
+      this.errorMessage,
+      this.successMessage});
 
   factory _$FindAuthStateImpl.fromJson(Map<String, dynamic> json) =>
       _$$FindAuthStateImplFromJson(json);
@@ -214,10 +242,14 @@ class _$FindAuthStateImpl implements _FindAuthState {
   final String? resetToken;
   @override
   final String? inputContact;
+  @override
+  final String? errorMessage;
+  @override
+  final String? successMessage;
 
   @override
   String toString() {
-    return 'FindAuthState(isLoading: $isLoading, isCodeSent: $isCodeSent, isVerified: $isVerified, currentAuthType: $currentAuthType, foundId: $foundId, resetToken: $resetToken, inputContact: $inputContact)';
+    return 'FindAuthState(isLoading: $isLoading, isCodeSent: $isCodeSent, isVerified: $isVerified, currentAuthType: $currentAuthType, foundId: $foundId, resetToken: $resetToken, inputContact: $inputContact, errorMessage: $errorMessage, successMessage: $successMessage)';
   }
 
   @override
@@ -237,13 +269,26 @@ class _$FindAuthStateImpl implements _FindAuthState {
             (identical(other.resetToken, resetToken) ||
                 other.resetToken == resetToken) &&
             (identical(other.inputContact, inputContact) ||
-                other.inputContact == inputContact));
+                other.inputContact == inputContact) &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage) &&
+            (identical(other.successMessage, successMessage) ||
+                other.successMessage == successMessage));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, isLoading, isCodeSent,
-      isVerified, currentAuthType, foundId, resetToken, inputContact);
+  int get hashCode => Object.hash(
+      runtimeType,
+      isLoading,
+      isCodeSent,
+      isVerified,
+      currentAuthType,
+      foundId,
+      resetToken,
+      inputContact,
+      errorMessage,
+      successMessage);
 
   /// Create a copy of FindAuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -269,7 +314,9 @@ abstract class _FindAuthState implements FindAuthState {
       final AuthType? currentAuthType,
       final String? foundId,
       final String? resetToken,
-      final String? inputContact}) = _$FindAuthStateImpl;
+      final String? inputContact,
+      final String? errorMessage,
+      final String? successMessage}) = _$FindAuthStateImpl;
 
   factory _FindAuthState.fromJson(Map<String, dynamic> json) =
       _$FindAuthStateImpl.fromJson;
@@ -288,6 +335,10 @@ abstract class _FindAuthState implements FindAuthState {
   String? get resetToken;
   @override
   String? get inputContact;
+  @override
+  String? get errorMessage;
+  @override
+  String? get successMessage;
 
   /// Create a copy of FindAuthState
   /// with the given fields replaced by the non-null parameter values.

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../models/auth_result_model.dart';
+import '../models/auth/auth_result_model.dart';
 import '../models/login/login_request_model.dart';
 import 'api_service.dart';
 import 'auth_client.dart';

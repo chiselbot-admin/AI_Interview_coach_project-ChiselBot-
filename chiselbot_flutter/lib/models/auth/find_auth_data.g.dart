@@ -16,6 +16,8 @@ _$FindAuthStateImpl _$$FindAuthStateImplFromJson(Map<String, dynamic> json) =>
       foundId: json['foundId'] as String?,
       resetToken: json['resetToken'] as String?,
       inputContact: json['inputContact'] as String?,
+      errorMessage: json['errorMessage'] as String?,
+      successMessage: json['successMessage'] as String?,
     );
 
 Map<String, dynamic> _$$FindAuthStateImplToJson(_$FindAuthStateImpl instance) =>
@@ -27,6 +29,8 @@ Map<String, dynamic> _$$FindAuthStateImplToJson(_$FindAuthStateImpl instance) =>
       'foundId': instance.foundId,
       'resetToken': instance.resetToken,
       'inputContact': instance.inputContact,
+      'errorMessage': instance.errorMessage,
+      'successMessage': instance.successMessage,
     };
 
 const _$AuthTypeEnumMap = {

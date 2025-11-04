@@ -26,10 +26,9 @@ mixin _$Notice {
   String get content => throw _privateConstructorUsedError;
   @JsonKey(name: 'createdAt')
   String get date => throw _privateConstructorUsedError;
-  int get viewCount => throw _privateConstructorUsedError; // ← 기본값 추가
-  bool get isVisible => throw _privateConstructorUsedError; // ← 기본값 추가
-  String? get modifiedAt =>
-      throw _privateConstructorUsedError; // ← nullable로 변경
+  int get viewCount => throw _privateConstructorUsedError;
+  bool get isVisible => throw _privateConstructorUsedError;
+  String? get modifiedAt => throw _privateConstructorUsedError;
   String? get authorName => throw _privateConstructorUsedError;
 
   /// Serializes this Notice to a JSON map.
@@ -225,15 +224,12 @@ class _$NoticeImpl extends _Notice {
   @override
   @JsonKey()
   final int viewCount;
-// ← 기본값 추가
   @override
   @JsonKey()
   final bool isVisible;
-// ← 기본값 추가
   @override
   @JsonKey()
   final String? modifiedAt;
-// ← nullable로 변경
   @override
   @JsonKey()
   final String? authorName;
@@ -308,11 +304,11 @@ abstract class _Notice extends Notice {
   @JsonKey(name: 'createdAt')
   String get date;
   @override
-  int get viewCount; // ← 기본값 추가
+  int get viewCount;
   @override
-  bool get isVisible; // ← 기본값 추가
+  bool get isVisible;
   @override
-  String? get modifiedAt; // ← nullable로 변경
+  String? get modifiedAt;
   @override
   String? get authorName;
 

@@ -1,17 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 
-import '../models/find_auth_data.dart';
+import '../models/auth/find_auth_data.dart';
 import '../repositories/i_auth_repository.dart';
 import '../repositories/dummy_auth_repository.dart';
 
-// =======================================================
 // 1. IAuthRepository를 제공하는 Provider (의존성 주입)
-// =======================================================
-// Provider는 구체적인 구현체가 아닌 IAuthRepository(추상화)에 의존합니다. (DIP 준수)
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {
   // 현재는 Dummy 구현체를 사용하며, 실제 서버 통신 시 ServerAuthRepository로 교체됨
-  // return ServerAuthRepository(); // 실제 통신 시
   return DummyAuthRepository();
 });
 

@@ -1,9 +1,9 @@
-import '../models/find_auth_data.dart';
+import '../models/auth/find_auth_data.dart';
 import '../models/login/login_request_model.dart';
 import '../models/user_model.dart';
 import '../services/auth_api_service.dart';
 import 'i_auth_repository.dart';
-import '../models/auth_result_model.dart';
+import '../models/auth/auth_result_model.dart';
 
 class AuthRepository implements IAuthRepository {
   final AuthApiService authApiService;

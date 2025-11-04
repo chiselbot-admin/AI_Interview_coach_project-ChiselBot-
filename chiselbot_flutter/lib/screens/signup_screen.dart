@@ -4,9 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
-import '../models/find_auth_data.dart';
 import '../models/user_model.dart';
-import '../providers/auth_notifier.dart';
+import '../providers/signup_notifier.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -18,45 +17,26 @@ class SignupScreen extends ConsumerStatefulWidget {
 class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
-  bool _isEmailVerificationLoading = false; // 이메일 인증 요청
-  bool _isCodeVerificationLoading = false; // 인증번호 확인
-  bool _isSignupLoading = false; // 회원가입
-
-  bool _isEmailVerified = false;
-  bool _isCodeSent = false;
-
   // 이메일 인증 요청
   Future<void> _requestEmailVerification() async {
-    // 이메일 필드만 검증
     final emailField = _formKey.currentState?.fields['email'];
     if (emailField?.validate() != true) return;
 
     final email = emailField?.value as String?;
     if (email == null || email.isEmpty) return;
 
-    setState(() => _isEmailVerificationLoading = true);
+    await ref.read(signUpNotifierProvider.notifier).sendVerificationCode(email);
 
-    try {
-      await ref.read(authRepositoryProvider).requestVerification(
-            contact: email,
-            type: AuthType.signUp,
-          );
-
-      setState(() {
-        _isCodeSent = true;
-        _isEmailVerificationLoading = false;
-      });
-
-      if (mounted) {
+    // 상태에 따른 스낵바 표시
+    final state = ref.read(signUpNotifierProvider);
+    if (mounted) {
+      if (state.isCodeSent) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('인증번호가 이메일로 전송되었습니다.')),
         );
-      }
-    } catch (e) {
-      setState(() => _isEmailVerificationLoading = false);
-      if (mounted) {
+      } else if (state.errorMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('인증번호 전송 실패: ${e.toString()}')),
+          SnackBar(content: Text('인증번호 전송 실패: ${state.errorMessage}')),
         );
       }
     }
@@ -74,39 +54,20 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
     if (code == null || code.isEmpty || email == null) return;
 
-    setState(() => _isCodeVerificationLoading = true);
+    await ref.read(signUpNotifierProvider.notifier).verifyCode(email, code);
 
-    try {
-      final result = await ref.read(authRepositoryProvider).verifyCode(
-            contact: email,
-            code: code,
-            type: AuthType.signUp,
-          );
-
-      // verifyCode는 AuthResultModel을 반환하지만 회원가입은 결과 없음
-      // 성공 시 예외가 발생하지 않으므로 성공으로 간주
-      setState(() {
-        _isEmailVerified = true;
-        _isCodeVerificationLoading = false;
-      });
-
-      if (mounted) {
+    // 상태에 따른 처리
+    final state = ref.read(signUpNotifierProvider);
+    if (mounted) {
+      if (state.isVerified) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('이메일 인증이 완료되었습니다.')),
         );
-      }
-    } catch (e) {
-      setState(() {
-        _isEmailVerified = false;
-        _isCodeVerificationLoading = false;
-      });
-
-      _formKey.currentState?.fields['verify_code']
-          ?.invalidate('인증번호가 일치하지 않아요.');
-
-      if (mounted) {
+      } else if (state.errorMessage != null) {
+        _formKey.currentState?.fields['verify_code']
+            ?.invalidate('인증번호가 일치하지 않아요.');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('인증 실패: ${e.toString()}')),
+          SnackBar(content: Text(state.errorMessage!)),
         );
       }
     }
@@ -114,8 +75,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   // 회원가입
   Future<void> _signUp() async {
+    final state = ref.read(signUpNotifierProvider);
+
     // 1. 이메일 인증 확인
-    if (!_isEmailVerified) {
+    if (!state.isVerified) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('이메일 인증을 먼저 완료해주세요.')),
       );
@@ -141,34 +104,28 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       return;
     }
 
-    setState(() => _isSignupLoading = true);
+    // 4. UserModel 생성
+    final user = UserModel(
+      email: email,
+      password: password,
+      phoneNumber: phoneNumber,
+      name: name,
+    );
 
-    try {
-      // 4. UserModel 생성
-      final user = UserModel(
-        email: email,
-        password: password,
-        phoneNumber: phoneNumber,
-        name: name,
-      );
+    // 5. 회원가입 호출
+    await ref.read(signUpNotifierProvider.notifier).signUp(user);
 
-      // 5. 회원가입 호출
-      await ref.read(authNotifierProvider.notifier).signUp(user);
-
-      setState(() => _isSignupLoading = false);
-
-      // 6. 성공 다이얼로그
-      if (mounted) {
+    // 6. 결과 처리
+    final signUpState = ref.read(signUpNotifierProvider);
+    if (mounted) {
+      if (signUpState.successMessage != null) {
         await _showSuccessDialog();
         if (mounted) {
           Navigator.of(context).pop(); // 로그인 화면으로
         }
-      }
-    } catch (e) {
-      setState(() => _isSignupLoading = false);
-      if (mounted) {
+      } else if (signUpState.errorMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('회원가입 실패: ${e.toString()}')),
+          SnackBar(content: Text(signUpState.errorMessage!)),
         );
       }
     }
@@ -202,6 +159,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final signUpState = ref.watch(signUpNotifierProvider);
+
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -217,8 +176,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               FormBuilderTextField(
                 name: 'name',
                 textInputAction: TextInputAction.next,
-                enabled: !_isSignupLoading,
-                decoration: InputDecoration(
+                enabled: !signUpState.isLoading,
+                decoration: const InputDecoration(
                   labelText: '이름',
                 ),
                 validator: _validateName,
@@ -229,15 +188,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 name: 'phoneNumber',
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.phone,
-                enabled: !_isSignupLoading,
-                decoration: InputDecoration(
-                    labelText: '휴대전화번호',
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    border: OutlineInputBorder(),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green))),
+                enabled: !signUpState.isLoading,
+                decoration: const InputDecoration(
+                  labelText: '휴대전화번호',
+                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  border: OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green)),
+                ),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(errorText: "휴대전화번호를 입력해주세요."),
                   FormBuilderValidators.match(
@@ -254,7 +214,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                     name: 'email',
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: '이메일',
                     ),
                     validator: _validateEmail,
@@ -264,22 +224,23 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     side: BorderSide(
-                        color:
-                            _isCodeSent ? Colors.grey.shade700 : Colors.grey),
+                        color: signUpState.isCodeSent
+                            ? Colors.grey.shade700
+                            : Colors.grey),
                   ),
-                  onPressed: _isEmailVerificationLoading || _isCodeSent
+                  onPressed: signUpState.isLoading || signUpState.isCodeSent
                       ? null
                       : _requestEmailVerification,
-                  child: _isEmailVerificationLoading
-                      ? SizedBox(
+                  child: signUpState.isLoading && !signUpState.isCodeSent
+                      ? const SizedBox(
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(strokeWidth: 2.0),
                         )
                       : Text(
-                          _isCodeSent ? "전송됨" : "인증",
+                          signUpState.isCodeSent ? "전송됨" : "인증",
                           style: TextStyle(
-                              color: _isCodeSent
+                              color: signUpState.isCodeSent
                                   ? Colors.grey.shade700
                                   : Colors.white),
                         ),
@@ -295,7 +256,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       name: 'verify_code',
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: '인증번호',
                       ),
                       validator: FormBuilderValidators.compose([
@@ -310,25 +271,27 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       side: BorderSide(
-                          color: _isEmailVerified
+                          color: signUpState.isVerified
                               ? Colors.grey.shade700
                               : Colors.grey),
                     ),
-                    onPressed: _isCodeVerificationLoading ||
-                            !_isCodeSent ||
-                            _isEmailVerified
+                    onPressed: signUpState.isLoading ||
+                            !signUpState.isCodeSent ||
+                            signUpState.isVerified
                         ? null
                         : _verifyEmailCode,
-                    child: _isCodeVerificationLoading
+                    child: signUpState.isLoading &&
+                            signUpState.isCodeSent &&
+                            !signUpState.isVerified
                         ? const SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(strokeWidth: 2.0),
                           )
                         : Text(
-                            _isEmailVerified ? "완료" : "확인",
+                            signUpState.isVerified ? "완료" : "확인",
                             style: TextStyle(
-                                color: _isEmailVerified
+                                color: signUpState.isVerified
                                     ? Colors.grey.shade700
                                     : Colors.white),
                           ),
@@ -341,8 +304,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 name: 'password',
                 textInputAction: TextInputAction.done,
                 obscureText: true,
-                enabled: !_isSignupLoading,
-                decoration: InputDecoration(
+                enabled: !signUpState.isLoading,
+                decoration: const InputDecoration(
                   labelText: '비밀번호',
                 ),
                 validator: _validatePassword,
@@ -353,8 +316,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 style: ElevatedButton.styleFrom(
                   side: const BorderSide(color: Colors.grey),
                 ),
-                onPressed: _isSignupLoading ? null : _signUp,
-                child: _isSignupLoading
+                onPressed: signUpState.isLoading ? null : _signUp,
+                child: signUpState.isLoading
                     ? const SizedBox(
                         width: 20,
                         height: 20,

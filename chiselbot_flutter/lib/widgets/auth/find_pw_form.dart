@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
-import '../../models/find_auth_data.dart';
+import '../../models/auth/find_auth_data.dart';
 import '../../providers/find_auth_notifier.dart';
 
 class FindPwForm extends ConsumerStatefulWidget {

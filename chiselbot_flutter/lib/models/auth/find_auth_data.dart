@@ -16,6 +16,8 @@ class FindAuthState with _$FindAuthState {
     String? foundId,
     String? resetToken,
     String? inputContact,
+    String? errorMessage,
+    String? successMessage,
   }) = _FindAuthState;
 
   factory FindAuthState.fromJson(Map<String, dynamic> json) =>

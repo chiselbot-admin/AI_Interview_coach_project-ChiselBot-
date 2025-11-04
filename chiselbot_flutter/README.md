@@ -16,3 +16,5 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 [//]: # (dart run build_runner build --delete-conflicting-outputs)
+[//]: # (ls -R lib)
+[//]: # (ls -R src | grep '.java')
