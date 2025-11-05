@@ -41,7 +41,17 @@ class AuthRepository implements IAuthRepository {
       return true;
     }
 
-    throw UnimplementedError('ID/PW 찾기 기능은 구현되지 않았습니다.');
+    if (type == AuthType.findId) {
+      // 이름으로 이메일 찾기는 인증 불필요
+      return true;
+    }
+
+    if (type == AuthType.findPw) {
+      await authApiService.sendPasswordResetCode(email: contact);
+      return true;
+    }
+
+    throw UnimplementedError('지원하지 않는 인증 타입입니다.');
   }
 
   @override
@@ -50,21 +60,23 @@ class AuthRepository implements IAuthRepository {
     required String code,
     required AuthType type,
   }) async {
-    if (type == AuthType.signUp) {
+    if (type == AuthType.signUp || type == AuthType.findPw) {
       await authApiService.verifyEmailCode(email: contact, code: code);
       return const AuthResultModel();
     }
 
-    throw UnimplementedError('ID/PW 찾기 기능은 구현되지 않았습니다.');
+    throw UnimplementedError('지원하지 않는 인증 타입입니다.');
   }
 
   @override
   Future<void> resetPassword({
     required String resetToken,
     required String newPassword,
-  }) {
-    // 비밀번호 재설정 API 구현 예정
-    throw UnimplementedError('비밀번호 재설정 기능은 구현되지 않았습니다.');
+  }) async {
+    await authApiService.resetPassword(
+      email: resetToken, // resetToken을 email로 사용
+      newPassword: newPassword,
+    );
   }
 
   @override
@@ -78,5 +90,10 @@ class AuthRepository implements IAuthRepository {
     required UserUpdateRequestModel request,
   }) async {
     await authApiService.updateProfile(token: token, request: request);
+  }
+
+  @override
+  Future<String> findEmailByName({required String name}) async {
+    return await authApiService.findEmailByName(name: name);
   }
 }

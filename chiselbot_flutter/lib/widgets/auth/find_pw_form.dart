@@ -17,25 +17,31 @@ class _FindPwFormState extends ConsumerState<FindPwForm> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   Future<void> _requestVerification() async {
-    // 폼 유효성 검사
     if (_formKey.currentState?.validate() != true) return;
 
-    // 폼 값 저장
     _formKey.currentState?.save();
     final formData = _formKey.currentState?.value;
     final contact = formData?['email'] as String?;
 
     if (contact == null) return;
 
-    // Notifier 접근
     final notifier = ref.read(findAuthNotifierProvider.notifier);
 
     try {
       // 인증번호 요청
-      await notifier.requestVerificationCode(
+      final response = await notifier.requestVerificationCode(
         contact: contact,
-        type: AuthType.findPw, // 비밀번호 찾기 타입 지정
+        type: AuthType.findPw,
       );
+
+      // 성공 여부와 상관없이 화면 전환을 하지 않음
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('인증번호가 발송되었습니다.'),
+          ),
+        );
+      }
 
       // 성공 메시지는 상위 화면에서 처리
     } catch (e) {

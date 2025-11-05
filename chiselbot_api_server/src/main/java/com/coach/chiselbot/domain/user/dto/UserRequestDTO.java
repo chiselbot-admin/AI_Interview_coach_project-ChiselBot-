@@ -55,5 +55,32 @@ public class UserRequestDTO {
         private LocalDateTime updatedAt;
     }
 
+	@Getter
+	@Setter
+	public static class FindEmail {
+		@NotBlank
+		@Size(min = 2, max = 20)
+		private String name;
+	}
+
+	@Getter
+	public static class FindPassword {
+		@NotBlank
+		@Email
+		private String email;
+	}
+
+
+	@Getter
+	@Setter
+	public static class ResetPassword {
+		@NotEmpty
+		@Email
+		private String email;
+
+		@NotEmpty
+		@Size(min = 4, max = 20)
+		private String newPassword;
+	}
 
 }

@@ -29,16 +29,17 @@ class _ResetPasswordFormState extends ConsumerState<ResetPasswordForm> {
 
     // resetToken 가져오기
     final state = ref.read(findAuthNotifierProvider);
-    final resetToken = state.resetToken;
+    // final resetToken = state.resetToken;
+    final email = state.inputContact;
 
-    if (resetToken == null) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('인증 정보가 없습니다. 다시 시도해주세요.')),
-        );
-      }
-      return;
-    }
+    // if (resetToken == null) {
+    //   if (mounted) {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       const SnackBar(content: Text('인증 정보가 없습니다. 다시 시도해주세요.')),
+    //     );
+    //   }
+    //   return;
+    // }
 
     try {
       // 비밀번호 재설정

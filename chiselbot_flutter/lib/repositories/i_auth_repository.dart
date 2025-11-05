@@ -28,6 +28,8 @@ abstract class IAuthRepository {
     required String newPassword,
   });
 
+  Future<String> findEmailByName({required String name});
+
   /// 내 정보 조회 (JWT 기반)
   Future<UserModel> getMyProfile({required String token});
 

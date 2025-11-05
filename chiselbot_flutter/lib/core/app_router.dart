@@ -29,7 +29,7 @@ class RoutePaths {
   static const findIdPw = '/findIdPw';
   static const emailLogin = '/emailLogin';
   static const onboarding = '/onboarding';
-  static const profileEdit = '/profile-edit';
+  static const profileEdit = '/profileEdit';
 }
 
 class QnaDetailArgs {
@@ -43,8 +43,8 @@ class AppRouter {
     switch (settings.name) {
       case RoutePaths.root:
         // return MaterialPageRoute(builder: (_) => const SplashScreen());
-        // return MaterialPageRoute(builder: (_) => const SettingsScreen());
-        return MaterialPageRoute(builder: (_) => const MainScreen());
+        return MaterialPageRoute(builder: (_) => const EmailLoginScreen());
+      // return MaterialPageRoute(builder: (_) => const MainScreen());
       case RoutePaths.main:
         return MaterialPageRoute(builder: (_) => const MainScreen());
       case RoutePaths.login:

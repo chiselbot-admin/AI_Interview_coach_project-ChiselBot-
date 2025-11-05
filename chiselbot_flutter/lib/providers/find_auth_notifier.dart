@@ -137,7 +137,7 @@ class FindAuthNotifier extends StateNotifier<FindAuthState> {
   Future<void> resetPassword({
     required String newPassword,
   }) async {
-    if (state.resetToken == null) {
+    if (state.inputContact == null) {
       throw Exception("재설정 토큰이 없습니다.");
     }
 
@@ -145,7 +145,7 @@ class FindAuthNotifier extends StateNotifier<FindAuthState> {
 
     try {
       await _authRepository.resetPassword(
-        resetToken: state.resetToken!,
+        resetToken: state.inputContact!,
         newPassword: newPassword,
       );
 
@@ -153,6 +153,31 @@ class FindAuthNotifier extends StateNotifier<FindAuthState> {
     } catch (e) {
       state = state.copyWith(isLoading: false);
       debugPrint("[PROVIDER] 비밀번호 재설정 실패: $e");
+      rethrow;
+    }
+  }
+
+  /// 이름으로 이메일 찾기
+  Future<void> findEmailByName({required String name}) async {
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+      foundId: null,
+    );
+
+    try {
+      final email = await _authRepository.findEmailByName(name: name);
+      state = state.copyWith(
+        isLoading: false,
+        foundId: email,
+        isVerified: true,
+        currentAuthType: AuthType.findId,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString(),
+      );
       rethrow;
     }
   }

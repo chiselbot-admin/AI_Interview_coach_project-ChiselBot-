@@ -4,7 +4,7 @@ import '../providers/auth_notifier.dart';
 import '../providers/profile_notifier.dart';
 
 class ProfileEditScreen extends ConsumerStatefulWidget {
-  static const String routeName = '/profile-edit';
+  static const String routeName = '/profileEdit';
 
   const ProfileEditScreen({super.key});
 

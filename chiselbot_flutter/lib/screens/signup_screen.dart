@@ -17,6 +17,9 @@ class SignupScreen extends ConsumerStatefulWidget {
 class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
+  bool _obscurePassword = true;
+  bool _obscurePasswordConfirm = true;
+
   // 이메일 인증 요청
   Future<void> _requestEmailVerification() async {
     final emailField = _formKey.currentState?.fields['email'];
@@ -93,14 +96,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     final formData = _formKey.currentState?.value;
 
     final name = formData?['name'] as String?;
-    final phoneNumber = formData?['phoneNumber'] as String?;
     final email = formData?['email'] as String?;
     final password = formData?['password'] as String?;
 
-    if (name == null ||
-        phoneNumber == null ||
-        email == null ||
-        password == null) {
+    if (name == null || email == null || password == null) {
       return;
     }
 
@@ -108,7 +107,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     final user = UserModel(
       email: email,
       password: password,
-      phoneNumber: phoneNumber,
+      phoneNumber: '',
       name: name,
     );
 
@@ -184,29 +183,29 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               ),
               const SizedBox(height: 16),
               // 휴대전화번호
-              FormBuilderTextField(
-                name: 'phoneNumber',
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.phone,
-                enabled: !signUpState.isLoading,
-                decoration: const InputDecoration(
-                  labelText: '휴대전화번호',
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
-                  border: OutlineInputBorder(),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey)),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green)),
-                ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(errorText: "휴대전화번호를 입력해주세요."),
-                  FormBuilderValidators.match(
-                    RegExp(r'^010-?([0-9]{4})-?([0-9]{4})$'),
-                    errorText: "올바른 휴대전화번호 형식인지 확인해주세요.",
-                  ),
-                ]),
-              ),
-              const SizedBox(height: 16),
+              // FormBuilderTextField(
+              //   name: 'phoneNumber',
+              //   textInputAction: TextInputAction.next,
+              //   keyboardType: TextInputType.phone,
+              //   enabled: !signUpState.isLoading,
+              //   decoration: const InputDecoration(
+              //     labelText: '휴대전화번호',
+              //     floatingLabelBehavior: FloatingLabelBehavior.auto,
+              //     border: OutlineInputBorder(),
+              //     enabledBorder: OutlineInputBorder(
+              //         borderSide: BorderSide(color: Colors.grey)),
+              //     focusedBorder: OutlineInputBorder(
+              //         borderSide: BorderSide(color: Colors.green)),
+              //   ),
+              //   validator: FormBuilderValidators.compose([
+              //     FormBuilderValidators.required(errorText: "휴대전화번호를 입력해주세요."),
+              //     FormBuilderValidators.match(
+              //       RegExp(r'^010-?([0-9]{4})-?([0-9]{4})$'),
+              //       errorText: "올바른 휴대전화번호 형식인지 확인해주세요.",
+              //     ),
+              //   ]),
+              // ),
+              // const SizedBox(height: 16),
               // 이메일 + 인증 버튼
               Row(children: [
                 Flexible(
@@ -302,14 +301,58 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               // 비밀번호
               FormBuilderTextField(
                 name: 'password',
-                textInputAction: TextInputAction.done,
-                obscureText: true,
+                textInputAction: TextInputAction.next,
+                obscureText: _obscurePassword,
                 enabled: !signUpState.isLoading,
-                decoration: const InputDecoration(
-                  labelText: '비밀번호',
-                ),
+                decoration: InputDecoration(
+                    labelText: '비밀번호',
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        icon: Icon(_obscurePassword
+                            ? Icons.visibility
+                            : Icons.visibility_off))),
                 validator: _validatePassword,
+                onChanged: (value) {
+                  _formKey.currentState?.fields['password_confirm']?.validate();
+                },
               ),
+              const SizedBox(height: 16),
+              // 비밀번호 확인 (비밀번호 필드 바로 아래에 추가)
+              FormBuilderTextField(
+                name: 'password_confirm',
+                textInputAction: TextInputAction.done,
+                obscureText: _obscurePasswordConfirm,
+                enabled: !signUpState.isLoading,
+                decoration: InputDecoration(
+                    labelText: '비밀번호 확인',
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _obscurePasswordConfirm = !_obscurePasswordConfirm;
+                          });
+                        },
+                        icon: Icon(_obscurePasswordConfirm
+                            ? Icons.visibility
+                            : Icons.visibility_off))),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '비밀번호 확인을 입력해주세요.';
+                  }
+
+                  final password =
+                      _formKey.currentState?.fields['password']?.value;
+                  if (value != password) {
+                    return '비밀번호가 일치하지 않습니다.';
+                  }
+
+                  return null;
+                },
+              ),
+
               const SizedBox(height: 32),
               // 회원가입 버튼
               ElevatedButton(
@@ -357,8 +400,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   String? _validatePassword(String? value) {
     return FormBuilderValidators.compose([
       FormBuilderValidators.required(errorText: '비밀번호를 입력해주세요.'),
-      FormBuilderValidators.password(
-          errorText: '비밀번호는 8자 이상, 대/소문자, 특수문자를 섞어주세요'),
+      FormBuilderValidators.minLength(4, errorText: '비밀번호는 4자 이상이어야 합니다.'),
+      FormBuilderValidators.maxLength(20, errorText: '비밀번호는 20자 이하여야 합니다.'),
     ])(value);
   }
 }

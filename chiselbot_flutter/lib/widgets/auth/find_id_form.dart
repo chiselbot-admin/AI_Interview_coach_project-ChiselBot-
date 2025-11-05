@@ -48,6 +48,35 @@ class _FindIdFormState extends ConsumerState<FindIdForm> {
     }
   }
 
+  Future<void> _findEmail() async {
+    // 폼 유효성 검사
+    if (_formKey.currentState?.validate() != true) return;
+
+    // 폼 값 저장
+    _formKey.currentState?.save();
+    final formData = _formKey.currentState?.value;
+    final name = formData?['name'] as String?;
+
+    if (name == null) return;
+
+    // Notifier 접근
+    final notifier = ref.read(findAuthNotifierProvider.notifier);
+
+    try {
+      // 이름으로 이메일 찾기
+      await notifier.findEmailByName(name: name);
+
+      // 성공 시 상위 화면에서 foundId 처리
+    } catch (e) {
+      // 실패 처리
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('이메일 찾기 실패: ${e.toString()}')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // 상태 읽기 (로딩 상태를 버튼 비활성화에 사용)
@@ -57,35 +86,30 @@ class _FindIdFormState extends ConsumerState<FindIdForm> {
     return FormBuilder(
       key: _formKey,
       child: Column(
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 휴대전화번호 입력 필드
+          // 이름 입력 필드
           FormBuilderTextField(
-            name: 'phoneNumber',
-            decoration: InputDecoration(
-              labelText: '휴대전화번호',
+            name: 'name',
+            decoration: const InputDecoration(
+              labelText: '이름',
             ),
-            keyboardType: TextInputType.phone,
-            enabled: !isLoading && !state.isCodeSent, // 로딩 중이거나 이미 전송했으면 비활성화
+            keyboardType: TextInputType.name,
+            enabled: !isLoading,
             validator: FormBuilderValidators.compose([
-              FormBuilderValidators.required(errorText: "휴대전화번호를 입력해주세요."),
-              // 이전에 정의했던 실용적인 한국 전화번호 정규식
-              FormBuilderValidators.match(
-                RegExp(r'^010-?([0-9]{4})-?([0-9]{4})$'),
-                errorText: "유효한 휴대전화번호 형식이 아닙니다.",
-              ),
+              FormBuilderValidators.required(errorText: "이름을 입력해주세요."),
+              FormBuilderValidators.minLength(2,
+                  errorText: "최소 2글자 이상 입력해주세요."),
             ]),
           ),
 
           const SizedBox(height: 20),
 
-          // 인증번호 요청 버튼
+          // 이메일 찾기 버튼
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               side: const BorderSide(color: Colors.grey),
             ),
-            onPressed:
-                isLoading || state.isCodeSent ? null : _requestVerification,
+            onPressed: isLoading ? null : _findEmail,
             child: isLoading
                 ? const SizedBox(
                     width: 20,
@@ -93,7 +117,7 @@ class _FindIdFormState extends ConsumerState<FindIdForm> {
                     child: CircularProgressIndicator(strokeWidth: 3.0),
                   )
                 : const Text(
-                    "인증번호 요청",
+                    "이메일 찾기",
                     style: TextStyle(color: Colors.white),
                   ),
           ),

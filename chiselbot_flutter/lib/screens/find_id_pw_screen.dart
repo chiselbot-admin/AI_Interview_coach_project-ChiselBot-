@@ -87,6 +87,7 @@ class _FindIdPwScreenState extends ConsumerState<FindIdPwScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TabBarView(
                   controller: _tabController,
+                  physics: const NeverScrollableScrollPhysics(),
                   children: [
                     _buildIdTab(state),
                     _buildPwTab(state),
@@ -106,8 +107,7 @@ class _FindIdPwScreenState extends ConsumerState<FindIdPwScreen>
       child: Column(
         children: [
           const SizedBox(height: 32),
-          if (!state.isCodeSent) const FindIdForm(),
-          if (state.isCodeSent) const VerifyInput(),
+          const FindIdForm(),
         ],
       ),
     );

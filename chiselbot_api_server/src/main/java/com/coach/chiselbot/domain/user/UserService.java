@@ -95,4 +95,65 @@ public class UserService {
                 "email", user.getEmail()
         );
     }
+
+	/**
+	 * 이름으로 이메일 찾기 (마스킹)
+	 */
+	@Transactional(readOnly = true)
+	public String findEmailByName(String name) {
+		User user = userJpaRepository.findByName(name)
+				.orElseThrow(() -> new IllegalArgumentException("해당 이름의 회원이 없습니다."));
+
+		return maskEmail(user.getEmail());
+	}
+
+	/**
+	 * 비밀번호 찾기용 인증번호 발송
+	 */
+	public void sendPasswordResetEmail(String email) {
+		String normalizedEmail = email.trim().toLowerCase();
+
+		User user = userJpaRepository.findByEmail(normalizedEmail)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+		emailVerificationService.sendCode(normalizedEmail);
+	}
+
+
+	/**
+	 * 비밀번호 재설정
+	 */
+	public void resetPassword(UserRequestDTO.ResetPassword dto) {
+		String email = dto.getEmail().trim().toLowerCase();
+
+		// 이메일 인증 확인
+		if (requireEmailVerification) {
+			boolean verified = emailVerificationService.isRecentlyVerified(email);
+			if (!verified) {
+				throw new IllegalArgumentException("이메일 인증이 필요합니다.");
+			}
+		}
+
+		User user = userJpaRepository.findByEmail(email)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+		userJpaRepository.save(user);
+	}
+
+	/**
+	 * 이메일 마스킹 처리
+	 */
+	private String maskEmail(String email) {
+		String[] parts = email.split("@");
+		String localPart = parts[0];
+		String domain = parts[1];
+
+		int visibleLength = Math.min(3, localPart.length());
+		String visible = localPart.substring(0, visibleLength);
+		String masked = visible + "***@" + domain;
+
+		return masked;
+	}
+
 }

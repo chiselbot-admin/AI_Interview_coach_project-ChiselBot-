@@ -89,4 +89,47 @@ public class UserRestController {
 		return ResponseEntity.ok(CommonResponseDto.success(user, "조회되었습니다."));
 	}
 
+	/**
+	 * 이메일 찾기 API (이름 기반)
+	 * POST /api/users/find-email
+	 */
+	@PostMapping("/find-email")
+	public ResponseEntity<CommonResponseDto<?>> findEmail(
+			@Valid @RequestBody UserRequestDTO.FindEmail dto
+	) {
+		String maskedEmail = userService.findEmailByName(dto.getName());
+		return ResponseEntity.ok(CommonResponseDto.success(
+				Map.of("email", maskedEmail),
+				"이메일을 찾았습니다."
+		));
+	}
+
+	/**
+	 * 비밀번호 찾기용 인증번호 발송
+	 * POST /api/users/find-password
+	 */
+	@PostMapping("/find-password")
+	public ResponseEntity<CommonResponseDto<?>> sendPasswordResetCode(
+			@Valid @RequestBody UserRequestDTO.FindPassword dto
+	) {
+		userService.sendPasswordResetEmail(dto.getEmail());
+		return ResponseEntity.ok(CommonResponseDto.success(
+				null,
+				"비밀번호 재설정용 인증 메일이 발송되었습니다."
+		));
+	}
+
+
+	/**
+	 * 비밀번호 재설정 API
+	 * POST /api/users/reset-password
+	 */
+	@PostMapping("/reset-password")
+	public ResponseEntity<CommonResponseDto<?>> resetPassword(
+			@Valid @RequestBody UserRequestDTO.ResetPassword dto
+	) {
+		userService.resetPassword(dto);
+		return ResponseEntity.ok(CommonResponseDto.success(null, "비밀번호가 변경되었습니다."));
+	}
+
 }

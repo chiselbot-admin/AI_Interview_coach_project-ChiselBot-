@@ -160,4 +160,70 @@ class AuthApiService {
       throw Exception(errorMessage);
     }
   }
+
+  /// 이름으로 이메일 찾기 (마스킹된 이메일 반환)
+  /// POST /api/users/find-email
+  Future<String> findEmailByName({required String name}) async {
+    const String path = '/api/users/find-email';
+
+    try {
+      final Response<Map<String, dynamic>> response =
+          await _authClient.dio.post(
+        path,
+        data: {'name': name},
+      );
+
+      final Map<String, dynamic> responseData = response.data!;
+      final Map<String, dynamic> dataMap =
+          responseData['data'] as Map<String, dynamic>;
+
+      return dataMap['email'] as String;
+    } on DioException catch (e) {
+      final responseData = e.response?.data;
+      final String errorMessage = responseData?['message'] ?? '이메일 찾기에 실패했습니다.';
+      throw Exception(errorMessage);
+    }
+  }
+
+  /// 비밀번호 찾기용 인증번호 전송
+  /// POST /api/users/find-password
+  Future<void> sendPasswordResetCode({required String email}) async {
+    const String path = '/api/users/find-password';
+
+    try {
+      await _authClient.dio.post(
+        path,
+        data: {'email': email},
+      );
+    } on DioException catch (e) {
+      final responseData = e.response?.data;
+      final String errorMessage =
+          responseData?['message'] ?? '비밀번호 인증번호 전송에 실패했습니다.';
+      throw Exception(errorMessage);
+    }
+  }
+
+  /// 비밀번호 재설정
+  /// POST /api/users/reset-password
+  Future<void> resetPassword({
+    required String email,
+    required String newPassword,
+  }) async {
+    const String path = '/api/users/reset-password';
+
+    try {
+      await _authClient.dio.post(
+        path,
+        data: {
+          'email': email,
+          'newPassword': newPassword,
+        },
+      );
+    } on DioException catch (e) {
+      final responseData = e.response?.data;
+      final String errorMessage =
+          responseData?['message'] ?? '비밀번호 재설정에 실패했습니다.';
+      throw Exception(errorMessage);
+    }
+  }
 }

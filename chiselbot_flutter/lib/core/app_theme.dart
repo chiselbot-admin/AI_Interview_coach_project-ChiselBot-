@@ -9,6 +9,9 @@ class AppTheme {
       backgroundColor: Colors.black,
       foregroundColor: Colors.white,
     ),
+    iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(foregroundColor: Colors.white)),
+    iconTheme: const IconThemeData(color: Colors.white),
     dividerColor: Colors.grey.shade800,
     dialogBackgroundColor: Colors.black,
     fontFamily: GoogleFonts.poppins().fontFamily,
@@ -47,6 +50,9 @@ class AppTheme {
       backgroundColor: Colors.white,
       foregroundColor: Colors.black,
     ),
+    iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(foregroundColor: Colors.black)),
+    iconTheme: const IconThemeData(color: Colors.black),
     dividerColor: Colors.grey.shade300,
     dialogBackgroundColor: Colors.white,
     fontFamily: GoogleFonts.poppins().fontFamily,
