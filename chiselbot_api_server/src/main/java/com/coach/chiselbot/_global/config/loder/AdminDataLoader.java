@@ -97,7 +97,7 @@ public class AdminDataLoader implements CommandLineRunner {
         req.setCategoryId(category.getCategoryId());               // 1L (Java)
         req.setInterviewLevel(InterviewLevel.LEVEL_1);
         req.setAdminId(admin.getId());
-        req.setQuestionText("JDBC는 무엇인가요");
+        req.setQuestionText("JDBC는 무엇인가요?");
         req.setAnswerText("자바에서 DB에 접근하여 데이터를 조회, 삽입, 수정, 삭제할 수 있도록 자바와 DB를 연결해 주는 인터페이스");
 
         // 이미 같은 카테고리/레벨 질문이 없다면 하나 생성 (중복 방지 - 선택)
