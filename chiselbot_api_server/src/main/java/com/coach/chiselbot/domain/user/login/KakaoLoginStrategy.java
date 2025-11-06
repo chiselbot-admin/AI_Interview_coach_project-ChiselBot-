@@ -1,6 +1,6 @@
 package com.coach.chiselbot.domain.user.login;
 
-import com.coach.chiselbot.domain.kakao.KakaOAuthClient;
+import com.coach.chiselbot.domain.kakao.KakaoOAuthClient;
 import com.coach.chiselbot.domain.kakao.RedirectRequiredException;
 import com.coach.chiselbot.domain.kakao.dto.KakaoUserInfoResponseDto;
 import com.coach.chiselbot.domain.user.Provider;
@@ -23,7 +23,7 @@ public class KakaoLoginStrategy implements LoginStrategy {
     private String redirectUri;
 
 
-    private final KakaOAuthClient kakaOAuthClient;
+    private final KakaoOAuthClient kakaoOAuthClient;
     private final UserJpaRepository userJpaRepository;
 
     @Override
@@ -40,18 +40,21 @@ public class KakaoLoginStrategy implements LoginStrategy {
             throw new RedirectRequiredException(kakaoAuthUrl);
         }
 
-        String accessToken = kakaOAuthClient.getAccessToken(dto.getAuthCode());
+        String accessToken = kakaoOAuthClient.getAccessToken(dto.getAuthCode());
 
-        KakaoUserInfoResponseDto kakaoUser = kakaOAuthClient.getUserInfo(accessToken);
+        KakaoUserInfoResponseDto kakaoUser = kakaoOAuthClient.getUserInfo(accessToken);
 
         String email = kakaoUser.getKakaoAccount().getEmail();
         String nickname = kakaoUser.getKakaoAccount().getProfile().getNickName();
+        String profileImageUrl = kakaoUser.getKakaoAccount().getProfile().getProfileImageUrl();
+
 
         return userJpaRepository.findByEmail(email)
                 .orElseGet(() -> userJpaRepository.save(
                         User.builder()
                                 .email(email)
                                 .name(nickname)
+                                .profileImage(profileImageUrl)
                                 .provider(Provider.KAKAO)
                                 .build()
                 ));

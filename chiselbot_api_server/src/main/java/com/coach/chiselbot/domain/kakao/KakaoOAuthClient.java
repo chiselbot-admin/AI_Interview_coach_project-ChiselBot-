@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class KakaOAuthClient {
+public class KakaoOAuthClient {
 
     private final WebClient webClient;
 

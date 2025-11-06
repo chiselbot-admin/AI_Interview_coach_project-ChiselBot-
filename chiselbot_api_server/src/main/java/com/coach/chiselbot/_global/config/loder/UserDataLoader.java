@@ -26,23 +26,26 @@ public class UserDataLoader implements CommandLineRunner {
                 null,
                 "유저1",
                 "test1@naver.com",
-                passwordEncoder.encode("1234")
+                passwordEncoder.encode("1234"),
+                null
                 , Provider.LOCAL));
 
         User testUser2 = userJpaRepository.save(new User(
                 null,
                 "유저2",
                 "test2@naver.com",
-                passwordEncoder.encode("1234")
-                , Provider.LOCAL));
+                passwordEncoder.encode("1234"),
+                null,
+                Provider.LOCAL));
 
 
         User testUser3 = userJpaRepository.save(new User(
                         null,
                         "유저3",
                         "test3@naver.com",
-                        passwordEncoder.encode("1234")
-                        , Provider.LOCAL
+                        passwordEncoder.encode("1234"),
+                        null,
+                        Provider.LOCAL
                 )
         );
     }
