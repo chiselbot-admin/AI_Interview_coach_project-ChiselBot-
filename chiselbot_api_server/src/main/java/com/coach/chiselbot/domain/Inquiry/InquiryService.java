@@ -94,8 +94,15 @@ public class InquiryService {
     /**
      * 사용자 문의 상세 조회 처리
      */
+//    public InquiryResponseDTO.UserInquiryDetail finById(Long id) {
+//        Inquiry inquiry = inquiryRepository.findById(id)
+//                .orElseThrow(() -> new Exception404("해당 문의를 찾을 수 없습니다."));
+//        return InquiryResponseDTO.UserInquiryDetail.from(inquiry);
+//    }
+
+    // 미답변된 문의도 상세 볼 수 있도록
     public InquiryResponseDTO.UserInquiryDetail finById(Long id) {
-        Inquiry inquiry = inquiryRepository.findById(id)
+        Inquiry inquiry = inquiryRepository.findByIdWithAnswer(id)
                 .orElseThrow(() -> new Exception404("해당 문의를 찾을 수 없습니다."));
         return InquiryResponseDTO.UserInquiryDetail.from(inquiry);
     }
