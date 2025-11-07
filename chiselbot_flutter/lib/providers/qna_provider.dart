@@ -167,21 +167,3 @@ class CreateInquiryController extends AsyncNotifier<void> {
 final createInquiryProvider =
     AsyncNotifierProvider<CreateInquiryController, void>(
         () => CreateInquiryController());
-
-// 답변 등록(관리자) 컨트롤러
-// class AnswerInquiryController extends AsyncNotifier<void> {
-//   @override
-//   Future<void> build() async {}
-//
-//   Future<void> submit({required int inquiryId, required String answer}) async {
-//     state = const AsyncLoading();
-//     final api = ref.read(apiServiceProvider);
-//     state = await AsyncValue.guard(() async {
-//       await api.answerInquiry(inquiryId: inquiryId, answer: answer);
-//     });
-//   }
-// }
-//
-// final answerInquiryProvider =
-//     AsyncNotifierProvider<AnswerInquiryController, void>(
-//         () => AnswerInquiryController());

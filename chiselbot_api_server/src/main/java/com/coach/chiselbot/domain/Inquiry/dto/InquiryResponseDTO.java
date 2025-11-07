@@ -89,6 +89,7 @@ public class InquiryResponseDTO {
         private LocalDateTime updatedAt;
 
         public static UserInquiryDetail from(Inquiry inquiry) {
+            Answer a = inquiry.getAnswer();
             return UserInquiryDetail.builder()
                     .inquiryId(inquiry.getId())
                     .title(inquiry.getTitle())
@@ -97,8 +98,8 @@ public class InquiryResponseDTO {
                     .createdAt(inquiry.getCreatedAt())
                     // 추가
                     .userId(inquiry.getUser() != null ? inquiry.getUser().getId() : null)
-                    .answerContent(inquiry.getAnswer().getContent())
-                    .answeredAt(inquiry.getAnswer().getCreatedAt())
+                    .answerContent(a != null ? a.getContent() : null)
+                    .answeredAt(a != null ? a.getCreatedAt() : null)
                     .updatedAt(inquiry.getModifiedAt())
                     .author(inquiry.getUser() != null ? inquiry.getUser().getName() : null)
                     .build();
