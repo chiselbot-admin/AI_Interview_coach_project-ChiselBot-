@@ -41,7 +41,7 @@ public class InquiryResponseDTO {
     public static class AdminInquiryList {
         private Long inquiryId;
         private String title;
-        private String userName;
+        private String userEmail;
         private InquiryStatus status;
         private String createdAt;
         private String answerCreatedAt;
@@ -50,7 +50,7 @@ public class InquiryResponseDTO {
         public AdminInquiryList(Inquiry inquiry) {
             this.inquiryId = inquiry.getId();
             this.title = inquiry.getTitle();
-            this.userName = inquiry.getUser().getName();
+            this.userEmail = inquiry.getUser().getEmail();
             this.status = inquiry.getStatus();
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -69,7 +69,7 @@ public class InquiryResponseDTO {
             return AdminInquiryList.builder()
                     .inquiryId(inquiry.getId())
                     .title(inquiry.getTitle())
-                    .userName(inquiry.getUser().getName())
+                    .userEmail(inquiry.getUser().getEmail())
                     .status(inquiry.getStatus())
                     .createdAt(inquiry.getCreatedAt().format(formatter))
                     .answerCreatedAt(answerCreated)
@@ -140,7 +140,7 @@ public class InquiryResponseDTO {
         private String title;
         private String content;
         private InquiryStatus status;
-        private String userName;
+        private String userEmail;
         private String answerContent;
         private LocalDateTime createdAt;
         private LocalDateTime answeredAt;
@@ -154,7 +154,7 @@ public class InquiryResponseDTO {
                     .title(inquiry.getTitle())
                     .content(inquiry.getContent())
                     .status(inquiry.getStatus())
-                    .userName(inquiry.getUser().getName())
+                    .userEmail(inquiry.getUser().getEmail())
                     .answerContent(answer != null ? answer.getContent() : null)
                     .createdAt(inquiry.getCreatedAt())
                     .answeredAt(answer != null ? answer.getCreatedAt() : null)

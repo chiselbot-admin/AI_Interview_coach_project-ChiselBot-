@@ -21,11 +21,10 @@
                         <tr>
                             <th style="width: 6%;">ID</th>
                             <th style="width: 25%;">제목</th>
-                            <th style="width: 18%;">작성자 이메일</th>
-                            <th style="width: 12%;">상태</th>
-                            <th style="width: 14%;">문의 등록일</th>
-                            <th style="width: 14%;">답변 등록일</th>
-                            <th style="width: 11%;">관리</th>
+                            <th style="width: 14%;">상태</th>
+                            <th style="width: 16%;">문의 등록일</th>
+                            <th style="width: 16%;">답변 등록일</th>
+                            <th style="width: 13%;">관리</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -33,7 +32,6 @@
                             <tr>
                                 <td>{{inquiryId}}</td>
                                 <td>{{title}}</td>
-                                <td>{{userName}}</td>
                                 <td>
                                     {{#isWaiting}}<span class="badge bg-warning text-dark">{{status.label}}</span>{{/isWaiting}}
                                     {{#isAnswered}}<span class="badge bg-success">{{status.label}}</span>{{/isAnswered}}

@@ -35,7 +35,7 @@ public class AdminInquiryController {
                                      Model model) {
         InquiryResponseDTO.AdminInquiryDetail inquiryDetail = inquiryService.getAdminInquiryDetail(id);
         model.addAttribute("inquiry",inquiryDetail);
-        return "auth/inquiry-detail";
+        return "inquiry/inquiry-detail";
     }
 
     /**
@@ -90,7 +90,7 @@ public class AdminInquiryController {
         model.addAttribute("totalElements", inquiryListPage.getTotalElements()); // 전체 질문 수
         model.addAttribute("pageSize", inquiryListPage.getSize()); // 한페이지당 표시 개수 : 10
 
-        return "auth/inquiry-list";
+        return "inquiry/inquiry-list";
     }
 
 
