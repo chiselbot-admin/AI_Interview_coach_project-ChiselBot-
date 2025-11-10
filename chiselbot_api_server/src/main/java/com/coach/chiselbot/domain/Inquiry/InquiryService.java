@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -38,12 +39,19 @@ public class InquiryService {
      * 관리자 리스트 조회 처리
      */
     public List<InquiryResponseDTO.AdminInquiryList> adminInquiryList() {
-        return inquiryRepository.findAllWithUserAnswer()
-                .stream()
-                .map(InquiryResponseDTO.AdminInquiryList::from)
+        List<Inquiry> inquiries = inquiryRepository.findAllWithUserAnswer();
+
+        return IntStream.range(0, inquiries.size())
+                .mapToObj(i -> {
+                    Inquiry inquiry = inquiries.get(i);
+                    InquiryResponseDTO.AdminInquiryList dto =
+                            InquiryResponseDTO.AdminInquiryList.from(inquiry);
+                    dto.setDisplayNumber(i + 1);
+
+                    return dto;
+                })
                 .toList();
     }
-
 
     /**
      * 사용자 문의 삭제 처리

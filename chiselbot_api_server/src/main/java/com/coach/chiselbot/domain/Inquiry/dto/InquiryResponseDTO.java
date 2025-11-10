@@ -6,6 +6,7 @@ import com.coach.chiselbot.domain.answer.Answer;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class InquiryResponseDTO {
 
@@ -32,6 +33,7 @@ public class InquiryResponseDTO {
     }
 
     @Getter
+    @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -40,18 +42,30 @@ public class InquiryResponseDTO {
         private String title;
         private String userName;
         private InquiryStatus status;
-        private LocalDateTime createdAt;
-        private LocalDateTime modifiedAt;
+        private String createdAt;
+        private String answerCreatedAt;
+        private int displayNumber;
 
         public static AdminInquiryList from(Inquiry inquiry) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            String answerCreated = (inquiry.getAnswer() != null)
+                    ? formatDate(inquiry.getAnswer().getCreatedAt(), formatter)
+                    : "-";
+
             return AdminInquiryList.builder()
                     .inquiryId(inquiry.getId())
                     .title(inquiry.getTitle())
                     .userName(inquiry.getUser().getName())
                     .status(inquiry.getStatus())
-                    .createdAt(inquiry.getCreatedAt())
-                    .modifiedAt(inquiry.getModifiedAt())
+                    .createdAt(inquiry.getCreatedAt().format(formatter))
+                    .answerCreatedAt(answerCreated)
                     .build();
+        }
+
+        private static String formatDate(LocalDateTime dateTime, DateTimeFormatter formatter) {
+            if (dateTime == null) return "-";
+            return dateTime.format(formatter);
         }
 
         public boolean isWaiting() {
@@ -64,10 +78,6 @@ public class InquiryResponseDTO {
 
         public boolean isClosed() {
             return status == InquiryStatus.CLOSED;
-        }
-
-        public boolean isUpdated() {
-            return modifiedAt != null && !modifiedAt.equals(createdAt);
         }
     }
 
