@@ -79,6 +79,10 @@ public class MenuInfoService {
         MenuInfo updateMenuInfo = menuInfoRepository.findById(menuId)
                 .orElseThrow(() -> new AdminException404("해당 메뉴를 찾을 수 없습니다"));
 
+        if ("ADMIN_MENU_INFO".equals(updateMenuInfo.getMenuCode())) {
+            throw new AdminException404("이 메뉴는 수정할 수 없습니다");
+        }
+
         Integer oldOrder = updateMenuInfo.getMenuOrder();
         Integer newOrder = request.getMenuOrder();
 

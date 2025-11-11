@@ -1,5 +1,6 @@
 package com.coach.chiselbot.domain.admin;
 
+import com.coach.chiselbot.domain.admin.dto.AdminRequestDto;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
