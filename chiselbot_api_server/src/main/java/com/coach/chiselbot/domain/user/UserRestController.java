@@ -58,7 +58,7 @@ public class UserRestController {
     @PatchMapping("/update")
     public ResponseEntity<CommonResponseDto<?>> updateMe(
             @RequestAttribute("userEmail") String userEmail,
-            @Valid @RequestBody UserRequestDTO.Update dto
+            @RequestBody UserRequestDTO.Update dto // @Valid 제거
     ) {
         userService.update(userEmail, dto);
         return ResponseEntity.ok(CommonResponseDto.success(null, Define.USER_INFO_MODIFY));

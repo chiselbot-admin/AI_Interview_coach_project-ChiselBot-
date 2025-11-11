@@ -49,8 +49,6 @@ public class UserRequestDTO {
         @Size(min = 2, max = 20)
         private String name;
 
-        @NotBlank
-        @Size(min = 4, max = 20, message = "비밀번호는 4자 이상 필수입니다")
         private String password;
 
         private LocalDateTime updatedAt;

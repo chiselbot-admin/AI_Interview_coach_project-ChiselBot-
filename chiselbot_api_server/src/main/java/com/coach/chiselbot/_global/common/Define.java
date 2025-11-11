@@ -21,6 +21,9 @@ public class Define {
     public static final String USER_REGISTED = "회원가입이 완료 되었습니다.";
     public static final String USER_INFO_MODIFY = "회원정보 수정이 완료 되었습니다.";
     public static final String USER_PASSWORD_MODIFY = "회원 비밀번호가 변경 되었습니다.";
+    public static final String USER_PASSWORD_VALID = "비밀번호는 4자 이상 필수입니다.";
+    public static final String USER_NAME_VALID = "이름은 필수 입력입니다.";
+
 
     // 관리자 응답 코드
     public static final String ADMIN_NOT_FOUND = "존재하지 않는 관리자 아이디입니다.";

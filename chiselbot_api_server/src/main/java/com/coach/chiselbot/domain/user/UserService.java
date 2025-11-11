@@ -74,18 +74,29 @@ public class UserService {
     /**
      * 회원 정보 수정 처리
      */
-	public User update(String userEmail, UserRequestDTO.Update dto) {
-		User user = userJpaRepository.findByEmail(userEmail)
-				.orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
+    public User update(String userEmail, UserRequestDTO.Update dto) {
+        // 사용자 조회
+        User user = userJpaRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
-		if (user.getProvider() == Provider.KAKAO) {
-			user.setName(dto.getName());
-		} else  {
-			user.setName(dto.getName());
-			user.setPassword(passwordEncoder.encode(dto.getPassword()));
-		}
-		return userJpaRepository.save(user);
-	}
+        if (dto.getName() == null || dto.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException(Define.USER_NAME_VALID);
+        }
+        if (user.getProvider() != Provider.KAKAO) {
+            // 로컬 유저는 비밀번호 필수
+            if (dto.getPassword() == null || dto.getPassword().trim().length() < 4) {
+                throw new IllegalArgumentException(Define.USER_PASSWORD_VALID);
+            }
+        }
+
+        user.setName(dto.getName());
+        if (user.getProvider() != Provider.KAKAO) {
+
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        return userJpaRepository.save(user);
+    }
 
     // 회원 전체 조회
 
