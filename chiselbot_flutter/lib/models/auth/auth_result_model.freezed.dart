@@ -22,7 +22,7 @@ AuthResultModel _$AuthResultModelFromJson(Map<String, dynamic> json) {
 mixin _$AuthResultModel {
 // 로그인/인증 성공 시
   String? get token => throw _privateConstructorUsedError;
-  String? get userId => throw _privateConstructorUsedError; // 아이디 찾기 성공 시
+  String? get userEmail => throw _privateConstructorUsedError; // 아이디 찾기 성공 시
   String? get name => throw _privateConstructorUsedError;
   String? get foundId => throw _privateConstructorUsedError;
   String? get profileImageUrl =>
@@ -47,7 +47,7 @@ abstract class $AuthResultModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String? token,
-      String? userId,
+      String? userEmail,
       String? name,
       String? foundId,
       String? profileImageUrl,
@@ -70,7 +70,7 @@ class _$AuthResultModelCopyWithImpl<$Res, $Val extends AuthResultModel>
   @override
   $Res call({
     Object? token = freezed,
-    Object? userId = freezed,
+    Object? userEmail = freezed,
     Object? name = freezed,
     Object? foundId = freezed,
     Object? profileImageUrl = freezed,
@@ -81,9 +81,9 @@ class _$AuthResultModelCopyWithImpl<$Res, $Val extends AuthResultModel>
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
               as String?,
-      userId: freezed == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
+      userEmail: freezed == userEmail
+          ? _value.userEmail
+          : userEmail // ignore: cast_nullable_to_non_nullable
               as String?,
       name: freezed == name
           ? _value.name
@@ -115,7 +115,7 @@ abstract class _$$AuthResultModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {String? token,
-      String? userId,
+      String? userEmail,
       String? name,
       String? foundId,
       String? profileImageUrl,
@@ -136,7 +136,7 @@ class __$$AuthResultModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? token = freezed,
-    Object? userId = freezed,
+    Object? userEmail = freezed,
     Object? name = freezed,
     Object? foundId = freezed,
     Object? profileImageUrl = freezed,
@@ -147,9 +147,9 @@ class __$$AuthResultModelImplCopyWithImpl<$Res>
           ? _value.token
           : token // ignore: cast_nullable_to_non_nullable
               as String?,
-      userId: freezed == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
+      userEmail: freezed == userEmail
+          ? _value.userEmail
+          : userEmail // ignore: cast_nullable_to_non_nullable
               as String?,
       name: freezed == name
           ? _value.name
@@ -176,7 +176,7 @@ class __$$AuthResultModelImplCopyWithImpl<$Res>
 class _$AuthResultModelImpl implements _AuthResultModel {
   const _$AuthResultModelImpl(
       {this.token,
-      this.userId,
+      this.userEmail,
       this.name,
       this.foundId,
       this.profileImageUrl,
@@ -189,7 +189,7 @@ class _$AuthResultModelImpl implements _AuthResultModel {
   @override
   final String? token;
   @override
-  final String? userId;
+  final String? userEmail;
 // 아이디 찾기 성공 시
   @override
   final String? name;
@@ -203,7 +203,7 @@ class _$AuthResultModelImpl implements _AuthResultModel {
 
   @override
   String toString() {
-    return 'AuthResultModel(token: $token, userId: $userId, name: $name, foundId: $foundId, profileImageUrl: $profileImageUrl, resetToken: $resetToken)';
+    return 'AuthResultModel(token: $token, userEmail: $userEmail, name: $name, foundId: $foundId, profileImageUrl: $profileImageUrl, resetToken: $resetToken)';
   }
 
   @override
@@ -212,7 +212,8 @@ class _$AuthResultModelImpl implements _AuthResultModel {
         (other.runtimeType == runtimeType &&
             other is _$AuthResultModelImpl &&
             (identical(other.token, token) || other.token == token) &&
-            (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.userEmail, userEmail) ||
+                other.userEmail == userEmail) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.foundId, foundId) || other.foundId == foundId) &&
             (identical(other.profileImageUrl, profileImageUrl) ||
@@ -223,8 +224,8 @@ class _$AuthResultModelImpl implements _AuthResultModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, token, userId, name, foundId, profileImageUrl, resetToken);
+  int get hashCode => Object.hash(runtimeType, token, userEmail, name, foundId,
+      profileImageUrl, resetToken);
 
   /// Create a copy of AuthResultModel
   /// with the given fields replaced by the non-null parameter values.
@@ -246,7 +247,7 @@ class _$AuthResultModelImpl implements _AuthResultModel {
 abstract class _AuthResultModel implements AuthResultModel {
   const factory _AuthResultModel(
       {final String? token,
-      final String? userId,
+      final String? userEmail,
       final String? name,
       final String? foundId,
       final String? profileImageUrl,
@@ -259,7 +260,7 @@ abstract class _AuthResultModel implements AuthResultModel {
   @override
   String? get token;
   @override
-  String? get userId; // 아이디 찾기 성공 시
+  String? get userEmail; // 아이디 찾기 성공 시
   @override
   String? get name;
   @override

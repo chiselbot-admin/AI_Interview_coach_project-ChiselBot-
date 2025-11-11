@@ -27,36 +27,40 @@ class MainDrawer extends ConsumerWidget {
               children: [
                 const UserAvatar(radius: 24),
                 const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      userName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    GestureDetector(
-                      onTap: isLoggedIn
-                          ? null
-                          : () {
-                              Navigator.pop(context);
-                              Navigator.of(context).pushNamed(RoutePaths.login);
-                            },
-                      child: Text(
-                        userEmail,
-                        style: TextStyle(
-                          color: isLoggedIn ? Colors.white70 : Colors.blue,
-                          fontSize: 14,
-                          decoration:
-                              isLoggedIn ? null : TextDecoration.underline,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        userName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      GestureDetector(
+                        onTap: isLoggedIn
+                            ? null
+                            : () {
+                                Navigator.pop(context);
+                                Navigator.of(context)
+                                    .pushNamed(RoutePaths.login);
+                              },
+                        child: Text(
+                          overflow: TextOverflow.ellipsis,
+                          userEmail,
+                          style: TextStyle(
+                            color: isLoggedIn ? Colors.white70 : Colors.blue,
+                            fontSize: 14,
+                            decoration:
+                                isLoggedIn ? null : TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

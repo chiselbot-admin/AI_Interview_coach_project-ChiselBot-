@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/user_model.dart';
 import '../providers/auth_notifier.dart';
 import '../providers/profile_notifier.dart';
 
@@ -20,6 +21,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
   bool _obscurePassword = true;
   bool _obscurePasswordConfirm = true;
+
+  UserModel? _currentUser;
 
   @override
   void initState() {
@@ -49,9 +52,14 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   void _onSubmit() {
     if (!_formKey.currentState!.validate()) return;
 
+    final isKakaoUser =
+        _currentUser?.email.contains('placeholder.kakao') ?? false;
+
     ref.read(profileNotifierProvider.notifier).updateProfile(
           name: _nameController.text.trim(),
-          password: _passwordController.text,
+          password: (!isKakaoUser && _passwordController.text.isNotEmpty)
+              ? _passwordController.text
+              : '', // null로 전달
         );
   }
 
@@ -86,6 +94,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           if (!isLoggedIn || user == null) {
             return const Center(child: Text('로그인이 필요합니다.'));
           }
+          final bool isKakaoUser = user.email.contains('placeholder.kakao');
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -96,11 +105,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                 children: [
                   // 이메일 (읽기 전용)
                   TextFormField(
-                    initialValue: user.email,
+                    initialValue: isKakaoUser ? '카카오 계정 연동' : user.email,
                     enabled: false,
                     decoration: const InputDecoration(
                       labelText: '이메일',
-                      hintText: '변경할 수 없습니다',
                       prefixIcon: Icon(Icons.email),
                     ),
                     style: TextStyle(color: Colors.grey.shade600),
@@ -116,6 +124,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       prefixIcon: Icon(Icons.person),
                     ),
                     validator: (value) {
+                      if (isKakaoUser) return null;
+
                       if (value == null || value.trim().isEmpty) {
                         return '이름을 입력해주세요.';
                       }
@@ -129,10 +139,14 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
                   // 비밀번호
                   TextFormField(
+                    enabled: !isKakaoUser,
                     controller: _passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
                       labelText: '새 비밀번호',
+                      labelStyle: isKakaoUser
+                          ? const TextStyle(color: Colors.grey)
+                          : null,
                       prefixIcon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
                         icon: Icon(_obscurePassword
@@ -146,6 +160,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       ),
                     ),
                     validator: (value) {
+                      if (isKakaoUser) return null;
+
                       if (value == null || value.isEmpty) {
                         return '비밀번호를 입력해주세요.';
                       }
@@ -159,10 +175,14 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
 
                   // 비밀번호 확인
                   TextFormField(
+                    enabled: !isKakaoUser,
                     controller: _passwordConfirmController,
                     obscureText: _obscurePasswordConfirm,
                     decoration: InputDecoration(
                       labelText: '새 비밀번호 확인',
+                      labelStyle: isKakaoUser
+                          ? const TextStyle(color: Colors.grey)
+                          : null,
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
                         icon: Icon(_obscurePasswordConfirm
@@ -176,6 +196,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                       ),
                     ),
                     validator: (value) {
+                      if (isKakaoUser) return null;
+
                       if (value == null || value.isEmpty) {
                         return '비밀번호 확인을 입력해주세요.';
                       }

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import '../models/auth/auth_result_model.dart';
 import '../models/auth/user_update_request_model.dart';
 import '../models/login/login_request_model.dart';
@@ -242,9 +243,12 @@ class AuthApiService {
       );
 
       final Map<String, dynamic> responseData = response.data!;
+      debugPrint('[AUTH_API] 서버 응답: $responseData'); // 👈 추가
+
       final Map<String, dynamic> dataMap =
           responseData['data'] as Map<String, dynamic>;
       final AuthResultModel authResult = AuthResultModel.fromJson(dataMap);
+      debugPrint('[AUTH_API] authResult: ${authResult.userEmail}'); // 👈 추가
 
       if (authResult.token != null) {
         _apiService.setToken(authResult.token);

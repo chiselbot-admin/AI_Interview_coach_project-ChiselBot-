@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ai_interview/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -19,7 +20,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.initState();
     Timer(const Duration(milliseconds: 2000), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => MainScreen()));
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     });
   }
 

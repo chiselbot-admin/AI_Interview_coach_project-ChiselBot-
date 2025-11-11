@@ -96,7 +96,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         password: '',
         phoneNumber: '',
         name: result.name!,
-        userId: result.userId,
+        userId: result.userEmail,
       );
 
       // ApiService에 토큰 주입
@@ -110,7 +110,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         token: result.token,
       );
 
-      debugPrint('[AUTH] 로그인 성공: ${result.userId}');
+      debugPrint('[AUTH] 로그인 성공: ${result.userEmail}');
     } catch (e) {
       // 5. 에러 처리
       state = state.when(
@@ -165,13 +165,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       // 3. 사용자 정보 생성
       final user = UserModel(
-        email: result.userId.toString(),
+        email: result.userEmail.toString(),
         password: '',
         phoneNumber: '',
         name: result.name ?? '카카오 사용자',
-        userId: result.userId,
+        userId: '',
         profileImageUrl: result.profileImageUrl,
       );
+      debugPrint('[AUTH] 카카오 로그인 - email: ${result.userEmail}'); // 👈 추가
 
       // 4. 상태 업데이트
       state = AuthState(
@@ -181,7 +182,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         token: result.token,
       );
 
-      debugPrint('[AUTH] 카카오 로그인 성공: ${result.userId}');
+      debugPrint('[AUTH] 카카오 로그인 성공: ${result.userEmail}');
     } catch (e) {
       state = state.when(
         (isLoading, isLoggedIn, user, token, errorMessage) => AuthState(

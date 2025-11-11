@@ -8,7 +8,7 @@ class AuthResultModel with _$AuthResultModel {
   const factory AuthResultModel({
     // 로그인/인증 성공 시
     String? token,
-    String? userId,
+    String? userEmail,
     // 아이디 찾기 성공 시
     String? name,
     String? foundId,
