@@ -1,5 +1,6 @@
 package com.coach.chiselbot.domain.Inquiry;
 
+import com.coach.chiselbot._global.common.Define;
 import com.coach.chiselbot._global.errors.adminException.AdminException404;
 import com.coach.chiselbot._global.errors.exception.Exception400;
 import com.coach.chiselbot._global.errors.exception.Exception403;
@@ -31,7 +32,7 @@ public class InquiryService {
      */
     public InquiryResponseDTO.AdminInquiryDetail getAdminInquiryDetail(Long inquiryId) {
         Inquiry inquiry = inquiryRepository.findByIdWithAnswer(inquiryId)
-                .orElseThrow(() -> new AdminException404("해당 문의를 찾을 수 없습니다."));
+                .orElseThrow(() -> new AdminException404(Define.QUESTION_NOT_FOUND));
 
         return InquiryResponseDTO.AdminInquiryDetail.from(inquiry);
     }
@@ -52,17 +53,17 @@ public class InquiryService {
      */
     public void deleteInquiry(Long inquiryId, String userEmail) {
         User user = userJpaRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new Exception404("사용자를 찾을 수 업습니다."));
+                .orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new Exception404("해당 문의를 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception404(Define.INQUIRY_NOT_FOUND));
 
         if (!inquiry.getUser().equals(user)) {
-            throw new Exception403("본인만 문의를 삭제할 수 있습니다.");
+            throw new Exception403(Define.INQUIRY_USER_MISMATCH);
         }
 
         if (inquiry.getStatus() != InquiryStatus.WAITING) {
-            throw new Exception400("대기 상태의 문의만 삭제할 수 있습니다.");
+            throw new Exception400(Define.INQUIRY_DELETE_WAITING_ONLY);
         }
 
         inquiryRepository.delete(inquiry);
@@ -74,17 +75,17 @@ public class InquiryService {
      */
     public Inquiry updateInquiry(Long inquiryId, InquiryRequestDTO.Update dto, String userEmail) {
         User user = userJpaRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new Exception404("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new Exception404("해당 문의를 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception404(Define.INQUIRY_NOT_FOUND));
 
         if (!inquiry.getUser().equals(user)) {
-            throw new Exception403("본인만 문의를 수정할 수 있습니다.");
+            throw new Exception403(Define.INQUIRY_USER_MISMATCH);
         }
 
         if (inquiry.getStatus() != InquiryStatus.WAITING) {
-            throw new Exception400("대기 상태의 문의만 수정할 수 있습니다.");
+            throw new Exception400(Define.INQUIRY_DELETE_WAITING_ONLY);
         }
 
         inquiry.setTitle(dto.getTitle());
@@ -105,7 +106,7 @@ public class InquiryService {
     // 미답변된 문의도 상세 볼 수 있도록
     public InquiryResponseDTO.UserInquiryDetail finById(Long id) {
         Inquiry inquiry = inquiryRepository.findByIdWithAnswer(id)
-                .orElseThrow(() -> new Exception404("해당 문의를 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception404(Define.INQUIRY_NOT_FOUND));
         return InquiryResponseDTO.UserInquiryDetail.from(inquiry);
     }
 
@@ -115,7 +116,7 @@ public class InquiryService {
     public Page<InquiryResponseDTO.UserInquiryList> findInquiries(Pageable pageable, String email) {
 
         User user = userJpaRepository.findByEmail(email)
-                .orElseThrow(() -> new Exception404("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
         //Page<Inquiry> inquiries = inquiryRepository.findAllByUserEmail(pageable, user);
         Page<Inquiry> inquiries = inquiryRepository.findAllByUser_Email(email, pageable);
@@ -128,7 +129,7 @@ public class InquiryService {
     public Inquiry createInquiry(InquiryRequestDTO.Create dto, String userEmail) {
 
         User author = userJpaRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new Exception404("존재하지 않는 사용자입니다"));
+                .orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
         Inquiry newInquiry = new Inquiry();
         newInquiry.setTitle(dto.getTitle());

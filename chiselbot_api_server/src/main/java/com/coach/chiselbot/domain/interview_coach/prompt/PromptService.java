@@ -1,5 +1,6 @@
 package com.coach.chiselbot.domain.interview_coach.prompt;
 
+import com.coach.chiselbot._global.common.Define;
 import com.coach.chiselbot._global.errors.adminException.AdminException500;
 import com.coach.chiselbot.domain.interview_coach.prompt.dto.PromptRequest;
 import com.coach.chiselbot.domain.interview_coach.prompt.dto.PromptResponse;
@@ -55,7 +56,7 @@ public class PromptService {
     @Transactional
     public PromptResponse.FindById updatePrompt(Long id, String newBody, Boolean newActive) {
         Prompt prompt = promptRepository.findById(id)
-                .orElseThrow(() -> new AdminException500("해당 프롬프트가 없습니다."));
+                .orElseThrow(() -> new AdminException500(Define.PROMPT_NOT_FOUND));
 
         if (newBody != null) prompt.setPromptBody(newBody);
 
@@ -92,7 +93,7 @@ public class PromptService {
                 empty.setId(null);
                 empty.setVersionName("-");
                 empty.setIsActive(false);
-                empty.setPromptBody("활성화된 프롬프트 없음");
+                empty.setPromptBody(Define.NO_ACTIVE_PROMPT);
                 result.add(new PromptResponse.FindById(empty));
             }
         }
@@ -110,7 +111,7 @@ public class PromptService {
     // 프롬프트 상세조회
     public PromptResponse.FindById getPromptById(Long id) {
         Prompt prompt = promptRepository.findById(id)
-                .orElseThrow(() -> new AdminException500("해당 프롬프트가 없습니다."));
+                .orElseThrow(() -> new AdminException500(Define.PROMPT_NOT_FOUND));
         return new PromptResponse.FindById(prompt);
     }
 

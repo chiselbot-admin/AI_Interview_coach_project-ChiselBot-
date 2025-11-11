@@ -1,5 +1,8 @@
 package com.coach.chiselbot.domain.userStorage;
 
+import com.coach.chiselbot._global.common.Define;
+import com.coach.chiselbot._global.errors.exception.Exception401;
+import com.coach.chiselbot._global.errors.exception.Exception404;
 import com.coach.chiselbot.domain.interview_question.InterviewQuestion;
 import com.coach.chiselbot.domain.interview_question.InterviewQuestionRepository;
 import com.coach.chiselbot.domain.user.User;
@@ -24,10 +27,10 @@ public class UserStorageService {
     @Transactional
     public StorageResponse.FindById saveStorage(StorageRequest.SaveRequest request, String userEmail){
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다"));
+                .orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
         InterviewQuestion question = interviewQuestionRepository.findById(request.getQuestionId())
-                .orElseThrow(() -> new NoSuchElementException("해당 질문을 찾을 수 없습니다"));
+                .orElseThrow(() -> new Exception404(Define.QUESTION_NOT_FOUND));
 
         UserStorage newStorage = new UserStorage();
         newStorage.setUser(user);
@@ -45,13 +48,13 @@ public class UserStorageService {
     @Transactional
     public void deleteStorage(Long storageId, String userEmail){
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다"));
+                .orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
         UserStorage storage = storageRepository.findById(storageId)
-                .orElseThrow(() -> new RuntimeException("보관함 데이터를 찾을 수 없습니다"));
+                .orElseThrow(() -> new Exception404(Define.STORAGE_NOT_FOUND));
 
         if(!storage.getUser().getId().equals(user.getId())){
-            throw new SecurityException("본인 보관함만 삭제 할 수 있습니다");
+            throw new Exception401(Define.STORAGE_USER_MISMATCH);
         }
 
         storageRepository.delete(storage);
@@ -60,7 +63,7 @@ public class UserStorageService {
     @Transactional(readOnly = true)
     public List<StorageResponse.FindAll> getStorageList(String userEmail){
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다"));
+                .orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
         // 최신순 조회(CreatedAt 기준)
         List<UserStorage> storageList = storageRepository.findByUserOrderByCreatedAtDesc(user);
@@ -71,10 +74,10 @@ public class UserStorageService {
     @Transactional(readOnly = true)
     public StorageResponse.FindById getStorageDetail(Long storageId, String userEmail){
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다"));
+                .orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
         UserStorage storage =  storageRepository.findById(storageId)
-                .orElseThrow(() -> new NoSuchElementException("보관함 데이터를 찾을 수 없습니다"));
+                .orElseThrow(() -> new Exception404(Define.STORAGE_NOT_FOUND));
 
         return new StorageResponse.FindById(storage);
     }

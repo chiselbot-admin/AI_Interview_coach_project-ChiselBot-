@@ -1,5 +1,6 @@
 package com.coach.chiselbot.domain.menuInfo;
 
+import com.coach.chiselbot._global.common.Define;
 import com.coach.chiselbot._global.errors.adminException.AdminException404;
 import com.coach.chiselbot.domain.menuInfo.dto.MenuInfoRequest;
 import com.coach.chiselbot.domain.menuInfo.dto.MenuInfoResponse;
@@ -77,7 +78,7 @@ public class MenuInfoService {
     @Transactional
     public MenuInfoResponse.FindById updateMenu(Long menuId ,MenuInfoRequest.UpdateMenu request){
         MenuInfo updateMenuInfo = menuInfoRepository.findById(menuId)
-                .orElseThrow(() -> new AdminException404("해당 메뉴를 찾을 수 없습니다"));
+                .orElseThrow(() -> new AdminException404(Define.MENU_NOT_FOUND));
 
         Integer oldOrder = updateMenuInfo.getMenuOrder();
         Integer newOrder = request.getMenuOrder();
@@ -113,7 +114,7 @@ public class MenuInfoService {
     @Transactional
     public void deleteMenu(Long menuId){
         MenuInfo menuInfo= menuInfoRepository.findById(menuId)
-                .orElseThrow(() -> new AdminException404("해당 메뉴를 찾을 수 없습니다"));
+                .orElseThrow(() -> new AdminException404(Define.MENU_NOT_FOUND));
 
         if (menuInfoRepository.existsByMenuOrder(menuInfo.getMenuOrder())) {
             List<MenuInfo> conflictMenus = menuInfoRepository.findByMenuOrderGreaterThan(menuInfo.getMenuOrder());
@@ -127,7 +128,7 @@ public class MenuInfoService {
 
     public MenuInfoResponse.FindById findById(Long id){
         MenuInfo menuInfo = menuInfoRepository.findById(id)
-                .orElseThrow(() -> new AdminException404("해당 메뉴를 찾을 수 없습니다"));
+                .orElseThrow(() -> new AdminException404(Define.MENU_NOT_FOUND));
 
         return new MenuInfoResponse.FindById(menuInfo);
     }

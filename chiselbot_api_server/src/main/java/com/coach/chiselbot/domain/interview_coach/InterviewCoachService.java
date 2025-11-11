@@ -1,5 +1,8 @@
 package com.coach.chiselbot.domain.interview_coach;
 
+import com.coach.chiselbot._global.common.Define;
+import com.coach.chiselbot._global.errors.exception.Exception404;
+import com.coach.chiselbot._global.errors.exception.Exception500;
 import com.coach.chiselbot.domain.interview_coach.dto.FeedbackRequest;
 import com.coach.chiselbot.domain.interview_coach.dto.FeedbackResponse;
 import com.coach.chiselbot.domain.interview_coach.feedback.FeedbackStrategy;
@@ -27,13 +30,7 @@ public class InterviewCoachService {
     public FeedbackResponse.FeedbackResult getFeedback(FeedbackRequest.AnswerRequest feedbackRequest) {
 
         InterviewQuestion question = questionRepository.findById(feedbackRequest.getQuestionId())
-                .orElseThrow(() -> new NoSuchFieldError("해당 질문을 찾을 수 없습니다"));
-
-
-        // 디버깅
-        System.out.println("조회된 질문: " + question);
-        System.out.println("문제 텍스트: " + question.getQuestionText());
-        System.out.println("정답 텍스트: " + question.getAnswerText());
+                .orElseThrow(() -> new Exception404(Define.QUESTION_NOT_FOUND));
 
 
         FeedbackStrategy feedbackStrategy =
@@ -78,9 +75,8 @@ public class InterviewCoachService {
                 result.setIntentText(question.getIntentText());
                 result.setPointText(question.getPointText());
             }
-            System.out.println("ai답변 파싱 result: " + result.toString());
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("AI 응답 변환 실패: " + aiAnswer, e);
+            throw new Exception500("AI 응답 변환 실패: " + (aiAnswer + " & ERROR : " + e));
         }
 
         return result;

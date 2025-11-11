@@ -1,5 +1,6 @@
 package com.coach.chiselbot.domain.notification;
 
+import com.coach.chiselbot._global.common.Define;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class NotificationSenderFactory {
             }
         }
 
-        throw new IllegalArgumentException("지원하지 않는 알림 방식입니다 :" + type);
+        throw new IllegalArgumentException(Define.NOT_SUPPORT_NOTI_TYPE +" : " + type);
     }
 
 

@@ -1,5 +1,9 @@
 package com.coach.chiselbot.domain.user;
 
+import com.coach.chiselbot._global.common.Define;
+import com.coach.chiselbot._global.errors.exception.Exception400;
+import com.coach.chiselbot._global.errors.exception.Exception401;
+import com.coach.chiselbot._global.errors.exception.Exception404;
 import com.coach.chiselbot.domain.emailverification.EmailVerificationService;
 import com.coach.chiselbot.domain.user.dto.UserRequestDTO;
 import com.coach.chiselbot.domain.user.login.LoginStrategy;
@@ -10,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.tools.Diagnostic;
 import java.util.Map;
 
 @Service
@@ -34,13 +39,13 @@ public class UserService {
 
 
         if (userJpaRepository.findByEmail(email).isPresent()) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+            throw new Exception400(Define.EMAIL_ALREADY_REGISTED);
         }
 
         if (requireEmailVerification) {
             boolean verified = emailVerificationService.isRecentlyVerified(email);
             if (!verified) {
-                throw new IllegalArgumentException("이메일 인증이 필요합니다.");
+                throw new Exception400(Define.EMAIL_AUTH_REQUIRED);
             }
         }
 
@@ -71,7 +76,7 @@ public class UserService {
      */
 	public User update(String userEmail, UserRequestDTO.Update dto) {
 		User user = userJpaRepository.findByEmail(userEmail)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+				.orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
 		if (user.getProvider() == Provider.KAKAO) {
 			user.setName(dto.getName());
@@ -90,7 +95,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public Map<String,Object> findOne(String userEmail) {
         User user = userJpaRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("회원이 아닙니다"));
+                .orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
         return Map.of(
                 "id", user.getId(),
@@ -105,7 +110,7 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public String findEmailByName(String name) {
 		User user = userJpaRepository.findByName(name)
-				.orElseThrow(() -> new IllegalArgumentException("해당 이름의 회원이 없습니다."));
+				.orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
 		return maskEmail(user.getEmail());
 	}
@@ -117,7 +122,7 @@ public class UserService {
 		String normalizedEmail = email.trim().toLowerCase();
 
 		User user = userJpaRepository.findByEmail(normalizedEmail)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+				.orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
 		emailVerificationService.sendCode(normalizedEmail);
 	}
@@ -133,12 +138,12 @@ public class UserService {
 		if (requireEmailVerification) {
 			boolean verified = emailVerificationService.isRecentlyVerified(email);
 			if (!verified) {
-				throw new IllegalArgumentException("이메일 인증이 필요합니다.");
+				throw new Exception401(Define.EMAIL_AUTH_REQUIRED);
 			}
 		}
 
 		User user = userJpaRepository.findByEmail(email)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+				.orElseThrow(() -> new Exception404(Define.USER_NOT_FOUND));
 
 		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
 		userJpaRepository.save(user);

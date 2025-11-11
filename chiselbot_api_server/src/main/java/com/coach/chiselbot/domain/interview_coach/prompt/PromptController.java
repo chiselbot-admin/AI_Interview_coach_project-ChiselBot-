@@ -71,7 +71,7 @@ public class PromptController {
         System.out.println("isActive: " + request.getIsActive());
         PromptResponse.FindById result = promptService.registerPrompt(request);
 
-        rttr.addFlashAttribute("message", "프롬프트가 성공적으로 등록되었습니다.");
+        rttr.addFlashAttribute("message", Define.PROMPT_SAVE_SUCCESS);
 
         return "redirect:/admin/prompts/list?level=" + result.getLevel();
     }

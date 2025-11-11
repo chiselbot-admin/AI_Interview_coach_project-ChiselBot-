@@ -1,5 +1,6 @@
 package com.coach.chiselbot.domain.user;
 
+import com.coach.chiselbot._global.common.Define;
 import com.coach.chiselbot._global.config.jwt.JwtTokenProvider;
 import com.coach.chiselbot._global.dto.CommonResponseDto;
 import com.coach.chiselbot.domain.user.dto.UserRequestDTO;
@@ -27,7 +28,7 @@ public class UserRestController {
     public ResponseEntity<CommonResponseDto<?>> signup(@Valid @RequestBody UserRequestDTO.SignUp dto) {
 
         userService.signUp(dto);
-        return ResponseEntity.ok(CommonResponseDto.success(null, "회원가입이 완료되었습니다"));
+        return ResponseEntity.ok(CommonResponseDto.success(null, Define.USER_REGISTED));
     }
 
     /**
@@ -47,7 +48,7 @@ public class UserRestController {
                 .token(token)
                 .build();
 
-        return ResponseEntity.ok(CommonResponseDto.success(response, "로그인에 성공했습니다"));
+        return ResponseEntity.ok(CommonResponseDto.success(response, Define.LOGIN_SUCCESS));
     }
 
     /**
@@ -60,7 +61,7 @@ public class UserRestController {
             @Valid @RequestBody UserRequestDTO.Update dto
     ) {
         userService.update(userEmail, dto);
-        return ResponseEntity.ok(CommonResponseDto.success(null, "수정되었습니다."));
+        return ResponseEntity.ok(CommonResponseDto.success(null, Define.USER_INFO_MODIFY));
     }
 
     /**
@@ -69,12 +70,12 @@ public class UserRestController {
      */
     @PostMapping("/logout")
     public ResponseEntity<?> logout() {
-        return ResponseEntity.ok(CommonResponseDto.success(null, "로그아웃 되었습니다"));
+        return ResponseEntity.ok(CommonResponseDto.success(null, Define.LOGOUT_SUCCESS));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CommonResponseDto<?>> findOne(@PathVariable String userEmail) {
-        return ResponseEntity.ok(CommonResponseDto.success(userService.findOne(userEmail), "조회되었습니다."));
+        return ResponseEntity.ok(CommonResponseDto.success(userService.findOne(userEmail), Define.USER_INFO_SEARCH_SUCCESS));
     }
 
 	/**
@@ -86,7 +87,7 @@ public class UserRestController {
 			@RequestAttribute("userEmail") String userEmail
 	) {
 		Map<String, Object> user = userService.findOne(userEmail);
-		return ResponseEntity.ok(CommonResponseDto.success(user, "조회되었습니다."));
+		return ResponseEntity.ok(CommonResponseDto.success(user, Define.USER_INFO_SEARCH_SUCCESS));
 	}
 
 	/**
@@ -100,7 +101,7 @@ public class UserRestController {
 		String maskedEmail = userService.findEmailByName(dto.getName());
 		return ResponseEntity.ok(CommonResponseDto.success(
 				Map.of("email", maskedEmail),
-				"이메일을 찾았습니다."
+				Define.EMAIL_FOUND
 		));
 	}
 
@@ -115,7 +116,7 @@ public class UserRestController {
 		userService.sendPasswordResetEmail(dto.getEmail());
 		return ResponseEntity.ok(CommonResponseDto.success(
 				null,
-				"비밀번호 재설정용 인증 메일이 발송되었습니다."
+				Define.EMAIL_PASSWORD_RESET_AUTH_SEND
 		));
 	}
 
@@ -129,7 +130,7 @@ public class UserRestController {
 			@Valid @RequestBody UserRequestDTO.ResetPassword dto
 	) {
 		userService.resetPassword(dto);
-		return ResponseEntity.ok(CommonResponseDto.success(null, "비밀번호가 변경되었습니다."));
+		return ResponseEntity.ok(CommonResponseDto.success(null, Define.USER_PASSWORD_MODIFY));
 	}
 
 }

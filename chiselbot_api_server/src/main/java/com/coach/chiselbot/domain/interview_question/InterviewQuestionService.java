@@ -1,5 +1,6 @@
 package com.coach.chiselbot.domain.interview_question;
 
+import com.coach.chiselbot._global.common.Define;
 import com.coach.chiselbot._global.errors.adminException.AdminException404;
 import com.coach.chiselbot.domain.admin.Admin;
 import com.coach.chiselbot.domain.admin.AdminRepository;
@@ -51,7 +52,7 @@ public class InterviewQuestionService {
     @Transactional(readOnly = true)
     public QuestionResponse.FindById getQuestionDetail(Long questionId){
         InterviewQuestion interviewQuestion = interviewQuestionRepository.findById(questionId)
-                .orElseThrow(()-> new AdminException404(" 해당 질문이 없습니다"));
+                .orElseThrow(()-> new AdminException404(Define.QUESTION_NOT_FOUND));
         return new QuestionResponse.FindById(interviewQuestion);
     }
 
@@ -61,7 +62,7 @@ public class InterviewQuestionService {
     @Transactional(readOnly = true)
     public QuestionResponse.FindById getOneQuestion(Long categoryId, InterviewLevel level) {
         InterviewCategory category = interviewCategoryRepository.findById(categoryId)
-                .orElseThrow(() -> new AdminException404("해당 카테고리를 찾을 수 없습니다"));
+                .orElseThrow(() -> new AdminException404(Define.QUESTION_CATEGORY_NOT_FOUND));
 
         long total = interviewQuestionRepository
                 .countByCategoryId_CategoryIdAndInterviewLevel(categoryId, level);
@@ -81,10 +82,10 @@ public class InterviewQuestionService {
     public QuestionResponse.FindById createQuestion (QuestionRequest.CreateQuestion request){
 
         InterviewCategory category = interviewCategoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new AdminException404("해당 ID의 카테고리를 찾을 수 없습니다"));
+                .orElseThrow(() -> new AdminException404(Define.QUESTION_CATEGORY_NOT_FOUND));
 
         Admin admin = adminRepository.findById(request.getAdminId())
-                .orElseThrow(() -> new AdminException404("해당 ID의 관리자를 찾을 수 없습니다"));
+                .orElseThrow(() -> new AdminException404(Define.ADMIN_NOT_FOUND));
 
         InterviewQuestion newQuestion = new InterviewQuestion();
 
@@ -134,13 +135,13 @@ public class InterviewQuestionService {
     @Transactional
     public QuestionResponse.FindById updateQuestion (QuestionRequest.UpdateQuestion request){
         InterviewQuestion newQuestion = questionRepository.findById(request.getQuestionId())
-                .orElseThrow(() -> new AdminException404("해당 질문을 찾을 수 없습니다"));
+                .orElseThrow(() -> new AdminException404(Define.QUESTION_NOT_FOUND));
 
         Admin newAdmin = adminRepository.findById(request.getAdminId())
-                .orElseThrow(() -> new AdminException404("해당 관리자를 찾을 수 없습니다"));
+                .orElseThrow(() -> new AdminException404(Define.ADMIN_NOT_FOUND));
 
         InterviewCategory newCategory = interviewCategoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new AdminException404("해당 카테고리를 찾을 수 없습니다"));
+                .orElseThrow(() -> new AdminException404(Define.QUESTION_CATEGORY_NOT_FOUND));
 
         boolean intentChanged = isTextChanged(
                 newQuestion.getIntentText(),

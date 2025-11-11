@@ -1,5 +1,6 @@
 package com.coach.chiselbot.domain.answer;
 
+import com.coach.chiselbot._global.common.Define;
 import com.coach.chiselbot._global.errors.adminException.AdminException403;
 import com.coach.chiselbot._global.errors.adminException.AdminException404;
 import com.coach.chiselbot._global.errors.exception.Exception400;
@@ -10,6 +11,7 @@ import com.coach.chiselbot.domain.admin.Admin;
 import com.coach.chiselbot.domain.admin.AdminRepository;
 import com.coach.chiselbot.domain.answer.dto.AnswerRequestDTO;
 import com.coach.chiselbot.domain.answer.dto.AnswerResponseDTO;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ public class AnswerService {
      */
     public AnswerResponseDTO.UpdateForm getUpdateForm(Long answerId) {
         Answer answer = answerRepository.findByIdWithInquiry(answerId)
-                .orElseThrow(() -> new AdminException404("답변을 찾을 수 없습니다."));
+                .orElseThrow(() -> new AdminException404(Define.ANSWER_NOT_FOUND));
 
         return AnswerResponseDTO.UpdateForm.from(answer);
     }
@@ -39,10 +41,10 @@ public class AnswerService {
     public Long updateAnswer(Long answerId, Long adminId, AnswerRequestDTO.Update dto) {
 
         Answer answer = answerRepository.findByIdWithInquiry(answerId)
-                .orElseThrow(() -> new AdminException404("해당 답변을 찾을 수 없습니다."));
+                .orElseThrow(() -> new AdminException404(Define.ANSWER_NOT_FOUND));
 
         if (!answer.getAdmin().getId().equals((adminId))) {
-            throw new AdminException403("본인만 답변을 수정할 수 있습니다.");
+            throw new AdminException403(Define.ANSWER_USER_MISMATCH);
         }
 
         answer.setContent(dto.getContent());
@@ -55,14 +57,14 @@ public class AnswerService {
     public Answer createAnswer(Long inquiryId, Long adminId, AnswerRequestDTO.Create dto) {
 
         Inquiry inquiry = inquiryRepository.findByIdWithAnswer(inquiryId)
-                .orElseThrow(() -> new AdminException404("문의가 존재하지 않습니다"));
+                .orElseThrow(() -> new AdminException404(Define.INQUIRY_NOT_FOUND));
 
         if (inquiry.getAnswer() != null) {
-            throw new Exception400("이미 답변이 등록된 문의입니다.");
+            throw new Exception400(Define.INQUIRY_ALREADY_ANSWERED);
         }
 
         Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new AdminException404("관리자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new AdminException404(Define.ADMIN_NOT_FOUND));
 
         Answer answer = Answer.builder()
                 .content(dto.getContent())

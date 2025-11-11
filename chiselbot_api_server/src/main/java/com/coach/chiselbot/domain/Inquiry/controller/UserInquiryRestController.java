@@ -1,5 +1,6 @@
 package com.coach.chiselbot.domain.Inquiry.controller;
 
+import com.coach.chiselbot._global.common.Define;
 import com.coach.chiselbot._global.dto.CommonResponseDto;
 import com.coach.chiselbot.domain.Inquiry.Inquiry;
 import com.coach.chiselbot.domain.Inquiry.InquiryService;
@@ -32,7 +33,7 @@ public class UserInquiryRestController {
             @RequestAttribute("userEmail") String email
     ) {
         inquiryService.deleteInquiry(inquiryId, email);
-        return ResponseEntity.ok(CommonResponseDto.success(null, "문의가 삭제 되었습니다."));
+        return ResponseEntity.ok(CommonResponseDto.success(null, Define.INQUIRY_DELETE_SUCCESS));
     }
 
     /**
@@ -46,7 +47,7 @@ public class UserInquiryRestController {
             @RequestAttribute("userEmail") String email
     ) {
         Inquiry updated = inquiryService.updateInquiry(inquiryId, dto, email);
-        return ResponseEntity.ok(CommonResponseDto.success(updated, "문의가 수정 되었습니다."));
+        return ResponseEntity.ok(CommonResponseDto.success(updated, Define.INQUIRY_MODIFY_SUCCESS));
     }
 
 
@@ -91,6 +92,6 @@ public class UserInquiryRestController {
         Inquiry createdInquiry = inquiryService.createInquiry(dto, email);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(CommonResponseDto.success(createdInquiry, "문의 등록이 완료되었습니다"));
+                .body(CommonResponseDto.success(createdInquiry, Define.INQUIRY_SAVE_SUCCESS));
     }
 }

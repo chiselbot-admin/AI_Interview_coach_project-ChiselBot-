@@ -1,5 +1,6 @@
 package com.coach.chiselbot.domain.emailverification;
 
+import com.coach.chiselbot._global.common.Define;
 import com.coach.chiselbot._global.dto.CommonResponseDto;
 import com.coach.chiselbot.domain.user.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +25,15 @@ public class EmailVerificationController {
     public ResponseEntity<CommonResponseDto<?>> send(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         if (email == null || email.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body(CommonResponseDto.error("이메일을 입력하세요."));
+            return ResponseEntity.badRequest().body(CommonResponseDto.error(Define.EMAIL_REQUIRED));
         }
         String normalized = email.trim().toLowerCase();
         if (userJpaRepository.existsByEmail(normalized)) {
 
-            return ResponseEntity.status(409).body(CommonResponseDto.error("이미 가입된 이메일입니다."));
+            return ResponseEntity.status(409).body(CommonResponseDto.error(Define.EMAIL_ALREADY_REGISTED));
         }
         service.sendCode(normalized);
-        return ResponseEntity.ok(CommonResponseDto.success(null, "인증 코드가 전송되었습니다."));
+        return ResponseEntity.ok(CommonResponseDto.success(null, Define.EMAIL_CODE_SEND));
     }
 
     @PostMapping("/email/verify")
@@ -40,12 +41,12 @@ public class EmailVerificationController {
         String email = body.get("email");
         String code = body.get("code");
         if (email == null || code == null) {
-            return ResponseEntity.badRequest().body(CommonResponseDto.error("이메일/코드를 입력하세요."));
+            return ResponseEntity.badRequest().body(CommonResponseDto.error(Define.EMAIL_AND_CODE_REQUIRED));
         }
         boolean ok = service.verifyCode(email, code);
         if (!ok) {
-            return ResponseEntity.badRequest().body(CommonResponseDto.error("인증에 실패했습니다."));
+            return ResponseEntity.badRequest().body(CommonResponseDto.error(Define.EMAIL_AUTH_FAIL));
         }
-        return ResponseEntity.ok(CommonResponseDto.success(null, "인증되었습니다."));
+        return ResponseEntity.ok(CommonResponseDto.success(null, Define.EMAIL_AUTH_SUCCESS));
     }
 }

@@ -1,5 +1,7 @@
 package com.coach.chiselbot.domain.user.login;
 
+import com.coach.chiselbot._global.common.Define;
+import com.coach.chiselbot._global.errors.exception.Exception400;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +21,7 @@ public class LoginStrategyFactory {
             }
         }
 
-        throw new IllegalArgumentException("지원하지 않는 로그인 방식입니다.");
+        throw new Exception400(Define.NOT_SUPPORT_LOGIN_TYPE);
 
     }
 }

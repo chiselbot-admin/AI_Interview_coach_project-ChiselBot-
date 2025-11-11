@@ -1,5 +1,8 @@
 package com.coach.chiselbot.domain.admin;
 
+import com.coach.chiselbot._global.common.Define;
+import com.coach.chiselbot._global.errors.adminException.AdminException400;
+import com.coach.chiselbot._global.errors.adminException.AdminException404;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,10 +26,10 @@ public class AdminService {
     public Admin login(AdminRequestDto.Login request) {
 
         Admin admin = adminRepository.findByEmail(request.getEmail()).orElseThrow(
-                () -> new NoSuchElementException("해당 이메일이 존재하지 않습니다."));
+                () -> new AdminException404(Define.EMAIL_NOT_FOUND));
 
         if (!passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new AdminException400(Define.PASSWORD_MISMATCH);
         }
         return admin;
     }
