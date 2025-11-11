@@ -84,7 +84,7 @@ public class KakaoOAuthController {
 			String token = jwtTokenProvider.createToken(user);
 
 			Map<String, Object> responseData = Map.of(
-					"userEmail", user.getEmail().toString(),
+					"userId", user.getId().toString(),
 					"name", user.getName(),
 					"token", token,
 					"profileImageUrl", user.getProfileImage()
