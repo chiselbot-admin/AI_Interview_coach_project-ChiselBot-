@@ -4,8 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 enum AppThemeMode {
   dark,
-  light,
-  system;
+  light;
 
   ThemeMode get themeMode {
     switch (this) {
@@ -13,8 +12,6 @@ enum AppThemeMode {
         return ThemeMode.dark;
       case AppThemeMode.light:
         return ThemeMode.light;
-      case AppThemeMode.system:
-        return ThemeMode.system;
     }
   }
 
@@ -24,8 +21,6 @@ enum AppThemeMode {
         return '다크';
       case AppThemeMode.light:
         return '라이트';
-      case AppThemeMode.system:
-        return '시스템';
     }
   }
 }

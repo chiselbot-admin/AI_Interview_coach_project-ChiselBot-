@@ -13,7 +13,6 @@ class ThemeSelectDialog extends ConsumerWidget {
     final dialogMaxWidth = screenWidth * 0.6;
 
     return Dialog(
-      backgroundColor: Colors.grey[900],
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -72,8 +71,6 @@ class _ThemeOption extends StatelessWidget {
         return Icons.dark_mode;
       case AppThemeMode.light:
         return Icons.light_mode;
-      case AppThemeMode.system:
-        return Icons.phone_android;
     }
   }
 
