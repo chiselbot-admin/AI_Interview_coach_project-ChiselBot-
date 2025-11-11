@@ -1,3 +1,4 @@
+import 'package:ai_interview/core/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -17,7 +18,7 @@ final authClientProvider = Provider<AuthClient>((ref) {
 
 // 2. AuthApiService Provider
 final authApiServiceProvider = Provider<AuthApiService>((ref) {
-  final apiService = ApiService('http://10.0.2.2:8080');
+  final apiService = ApiService(Constants.baseUrl);
   final authClient = ref.watch(authClientProvider);
   return AuthApiService(apiService, authClient);
 });
@@ -47,8 +48,8 @@ final currentUserInfoProvider =
     (isLoading, isLoggedIn, user, token, errorMessage) {
       if (isLoggedIn && user != null) {
         final name = user.name?.isNotEmpty == true ? user.name! : '개발자';
-        final String displayEmail =
-            user.email.contains('@') ? user.email : '# 카카오 로그인';
+        final bool isKakaoUser = user.email.contains('placeholder.kakao');
+        final String displayEmail = isKakaoUser ? '# 카카오 계정 연동' : user.email;
         return (name, displayEmail, user.profileImageUrl, true);
       }
       return ('개발자', '로그인해주세요', null, false);
@@ -109,8 +110,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
         user: user,
         token: result.token,
       );
-
-      debugPrint('[AUTH] 로그인 성공: ${result.userEmail}');
     } catch (e) {
       // 5. 에러 처리
       state = state.when(
@@ -126,7 +125,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
           errorMessage: '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.',
         ),
       );
-      debugPrint('[AUTH] 로그인 실패: $e');
       rethrow;
     }
   }
@@ -172,7 +170,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
         userId: '',
         profileImageUrl: result.profileImageUrl,
       );
-      debugPrint('[AUTH] 카카오 로그인 - email: ${result.userEmail}'); // 👈 추가
 
       // 4. 상태 업데이트
       state = AuthState(
@@ -181,8 +178,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
         user: user,
         token: result.token,
       );
-
-      debugPrint('[AUTH] 카카오 로그인 성공: ${result.userEmail}');
     } catch (e) {
       state = state.when(
         (isLoading, isLoggedIn, user, token, errorMessage) => AuthState(
@@ -197,7 +192,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
           errorMessage: '카카오 로그인에 실패했습니다.',
         ),
       );
-      debugPrint('[AUTH] 카카오 로그인 실패: $e');
       rethrow;
     }
   }
@@ -233,8 +227,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
         ),
         unauthenticated: () => const AuthState(isLoading: false),
       );
-
-      debugPrint('[AUTH] 회원가입 성공: ${user.email}');
     } catch (e) {
       // 4. 에러 처리
       state = state.when(
@@ -250,7 +242,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
           errorMessage: '회원가입에 실패했습니다. 다시 시도해주세요.',
         ),
       );
-      debugPrint('[AUTH] 회원가입 실패: $e');
       rethrow;
     }
   }
@@ -259,10 +250,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> logout() async {
     // ApiService에서 토큰 제거 — 헤더 Authorization 지우기
     _api.setToken(null);
-
     // 상태 비우기
     state = const AuthState.unauthenticated();
-    debugPrint('[AUTH] 로그아웃');
   }
 
   /// 사용자 이름 업데이트 (프로필 수정 후)
@@ -288,13 +277,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
       },
       unauthenticated: () => const AuthState.unauthenticated(),
     );
-    debugPrint('[AUTH] 사용자 이름 업데이트: $name');
-  }
-
-  /// 자동 로그인 체크 (추후 구현)
-  Future<void> checkAuthStatus() async {
-    // TODO: 저장된 토큰 확인 및 자동 로그인 처리
-    // SharedPreferences 등을 사용하여 토큰 확인
   }
 
   /// 에러 메시지 초기화

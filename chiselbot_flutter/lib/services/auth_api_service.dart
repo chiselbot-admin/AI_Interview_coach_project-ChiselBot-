@@ -243,13 +243,9 @@ class AuthApiService {
       );
 
       final Map<String, dynamic> responseData = response.data!;
-      debugPrint('[AUTH_API] 서버 응답: $responseData'); // 👈 추가
-
       final Map<String, dynamic> dataMap =
           responseData['data'] as Map<String, dynamic>;
       final AuthResultModel authResult = AuthResultModel.fromJson(dataMap);
-      debugPrint('[AUTH_API] authResult: ${authResult.userEmail}'); // 👈 추가
-
       if (authResult.token != null) {
         _apiService.setToken(authResult.token);
       }

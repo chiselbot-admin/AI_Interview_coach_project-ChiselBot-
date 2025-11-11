@@ -11,23 +11,13 @@ import 'core/app_theme.dart';
 import 'providers/theme_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // FIRST
-  await printKeyHash();
+  WidgetsFlutterBinding.ensureInitialized();
+  // await printKeyHash();
   await dotenv.load(fileName: ".env");
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY']!,
   );
-
   runApp(const ProviderScope(child: MyApp()));
-}
-
-Future<void> printKeyHash() async {
-  try {
-    final keyHash = await KakaoSdk.origin;
-    print("현재 사용 중인 키 해시: $keyHash");
-  } catch (e) {
-    print("키 해시를 가져오는 중 오류 발생: $e");
-  }
 }
 
 class MyApp extends ConsumerWidget {
@@ -55,3 +45,12 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
+
+// Future<void> printKeyHash() async {
+//   try {
+//     final keyHash = await KakaoSdk.origin;
+//     debugPrint("현재 사용 중인 키 해시: $keyHash");
+//   } catch (e) {
+//     debugPrint("키 해시를 가져오는 중 오류 발생: $e");
+//   }
+// }

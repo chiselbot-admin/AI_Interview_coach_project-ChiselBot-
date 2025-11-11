@@ -37,7 +37,6 @@ class NoticeApiService {
       }
       throw Exception('공지사항 데이터 형식 오류');
     }
-
     throw Exception('공지사항 목록 조회 실패 (${res.statusCode})');
   }
 
@@ -58,7 +57,6 @@ class NoticeApiService {
       }
       throw Exception('공지사항 데이터 형식 오류');
     }
-
     throw Exception('공지사항 상세 조회 실패 (${res.statusCode})');
   }
 }
