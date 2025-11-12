@@ -12,31 +12,30 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-	private final JwtInterceptor jwtInterceptor;
-	private final AdminLoginInterceptor adminLoginInterceptor;
+    private final JwtInterceptor jwtInterceptor;
+    private final AdminLoginInterceptor adminLoginInterceptor;
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(jwtInterceptor)
-				.addPathPatterns("/api/**")
-				.excludePathPatterns("/api/users/signup", "/api/users/login/**", "/api/interview/coach/**",
-						"/api/auth/email/**",
-						"/api/interview/**", "/api/notice/**",
-						"/api/users/find-email/**", "/api/users/find-password/**", "/api/users/reset-password/**"
-				);
-		registry.addInterceptor(adminLoginInterceptor)
-				.addPathPatterns("/","/admin/**")
-				.excludePathPatterns(
-						"/admin/login-form",
-						"/admin/login",
-						"/admin/logout"
-				);
-	}
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(jwtInterceptor)
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/api/users/signup", "/api/users/login/**", "/api/interview/coach/**",
+                        "/api/auth/email/**",
+                        "/api/interview/**", "/api/notice/**",
+                        "/api/users/find-email/**", "/api/users/find-password/**", "/api/users/reset-password/**"
+                );
+        registry.addInterceptor(adminLoginInterceptor)
+                .addPathPatterns("/", "/admin/**")
+                .excludePathPatterns(
+                        "/login",
+                        "/logout"
+                );
+    }
 
-	@Override
-	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**")
-				.allowedOrigins("*")
-				.allowedMethods("*");
-	}
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("*");
+    }
 }

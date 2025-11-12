@@ -7,10 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
 
@@ -43,6 +41,6 @@ public class AdminController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         adminService.logout(session);
-        return "redirect:/admin/login-form";
+        return "redirect:/login-form";
     }
 }
