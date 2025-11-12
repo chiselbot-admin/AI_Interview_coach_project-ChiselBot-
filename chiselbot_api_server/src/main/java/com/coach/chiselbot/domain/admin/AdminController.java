@@ -33,7 +33,7 @@ public class AdminController {
     public String login(AdminRequestDto.Login request, HttpSession session) {
         Admin admin = adminService.login(request);
         session.setAttribute(Define.SESSION_USER, admin);
-        return "redirect:/admin/";
+        return "redirect:/";
     }
 
     /**
