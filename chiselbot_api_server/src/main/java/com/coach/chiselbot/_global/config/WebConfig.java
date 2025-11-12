@@ -25,10 +25,11 @@ public class WebConfig implements WebMvcConfigurer {
 						"/api/users/find-email/**", "/api/users/find-password/**", "/api/users/reset-password/**"
 				);
 		registry.addInterceptor(adminLoginInterceptor)
-				.addPathPatterns("/", "/admin/**")
+				.addPathPatterns("/","/admin/**")
 				.excludePathPatterns(
-						"/login",
-						"/logout"
+						"/admin/login-form",
+						"/admin/login",
+						"/admin/logout"
 				);
 	}
 
