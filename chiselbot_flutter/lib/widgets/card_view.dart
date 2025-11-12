@@ -81,8 +81,10 @@ class _CardViewState extends State<CardView> {
                       height: double.infinity,
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? Colors.grey.withAlpha(100)
-                            : Colors.grey.withAlpha(50),
+                            ? Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest
+                            : Theme.of(context).colorScheme.surfaceContainerLow,
                       ),
                     ),
                     Column(
@@ -107,7 +109,7 @@ class _CardViewState extends State<CardView> {
                           cardData.title,
                           style: const TextStyle(
                             fontSize: 16,
-                            color: Colors.white,
+                            // color: Colors.white,
                           ),
                         ),
                         Expanded(

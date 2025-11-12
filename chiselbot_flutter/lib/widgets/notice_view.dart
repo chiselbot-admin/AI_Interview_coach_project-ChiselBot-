@@ -13,30 +13,15 @@ class NoticeView extends ConsumerStatefulWidget {
 }
 
 class _NoticeViewState extends ConsumerState<NoticeView> {
-  // 1. PageController: PageView의 위치를 제어합니다.
   late PageController _pageController;
-  // 2. Timer: 일정한 간격으로 페이지 전환을 발생시킵니다.
   Timer? _timer;
-
-  // // 배너에 표시될 데이터 목록
-  // final List<Map<String, dynamic>> _bannerItems = const [
-  //   {'title': ' 🎄 ✨ ✨ ✨ ✨ ✨ ✨  Merry Christmas ✨ ✨ ✨ ✨ ✨ ✨ 🎄 '},
-  //   {'title': '[공지] 11월 6일(목) 개발 1차 마감 기한입니다!'},
-  //   {'title': '[요청] UI 피드백 언제든지 자유롭게 부탁드립니다!'},
-  //   {'title': '[필독] ChiselBot V1.5.0 대규모 업데이트 및 서비스 정책 변경 안내!!!!!!!!!!!!!!!'},
-  // ];
-
-  // 현재 페이지 인덱스를 저장합니다.
   int _currentPage = 10000;
   static const int _infiniteItemCount = 2000000000;
 
   @override
   void initState() {
     super.initState();
-    // PageController 초기화
     _pageController = PageController(initialPage: _currentPage);
-
-    // 자동 스크롤 타이머 시작
     _startAutoScroll();
   }
 
@@ -47,7 +32,7 @@ class _NoticeViewState extends ConsumerState<NoticeView> {
       if (_pageController.hasClients) {
         // 다음 페이지 인덱스 계산 (마지막 페이지면 0으로 순환)
         // final int nextPageIndex = (_currentPage + 1) % _bannerItems.length;
-        final int nextPageIndex = _currentPage + 1; // <- 수정된 부분 (나머지 연산 제거)
+        final int nextPageIndex = _currentPage + 1;
 
         _pageController.animateToPage(
           nextPageIndex,
@@ -76,7 +61,7 @@ class _NoticeViewState extends ConsumerState<NoticeView> {
       },
       child: Center(
         child: SizedBox(
-          height: bannerHeight,
+          height: bannerHeight + 16,
           child: noticesAsync.when(
             data: (notices) {
               if (notices.isEmpty) {
@@ -98,15 +83,21 @@ class _NoticeViewState extends ConsumerState<NoticeView> {
                   final notice = notices[actualIndex];
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    decoration: BoxDecoration(
+                        color:
+                            Theme.of(context).colorScheme.surfaceContainerLow),
                     child: Row(
                       children: [
                         if (notice.isNew)
-                          const Text(
-                            '[NEW] ',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              height: 5,
+                              width: 5,
+                              margin: EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(8)),
                             ),
                           ),
                         Expanded(
@@ -114,11 +105,7 @@ class _NoticeViewState extends ConsumerState<NoticeView> {
                             '[공지] ${notice.title}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.grey.shade500,
-                              fontSize: 12,
-                              fontWeight: FontWeight.normal,
-                            ),
+                            style: TextStyle(fontSize: 12),
                           ),
                         ),
                       ],

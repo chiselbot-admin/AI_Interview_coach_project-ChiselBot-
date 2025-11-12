@@ -134,7 +134,10 @@ class _MainViewState extends ConsumerState<MainView> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MainViewTitle(context, mediaQuery),
-        Divider(color: Colors.grey.shade800),
+        const Divider(
+          height: 8,
+          thickness: 0.01,
+        ),
         NoticeView(),
         if (_isLoading)
           SizedBox(
@@ -190,14 +193,12 @@ class _MainViewState extends ConsumerState<MainView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Divider(color: Colors.grey.shade800, height: 32),
+        const Divider(height: 32, indent: 256, endIndent: 256, thickness: 0),
         Padding(
           padding: EdgeInsets.only(left: mediaQuery.size.width * .1),
           child: Text(categoryTitle,
-              style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white70)),
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         ),
         SizedBox(
           height: mediaQuery.size.height * _cardRatio,

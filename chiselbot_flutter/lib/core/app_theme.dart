@@ -18,6 +18,8 @@ class AppTheme {
       colorScheme: ColorScheme.fromSeed(
         seedColor: Colors.black,
         brightness: Brightness.dark,
+        surfaceContainerHighest: Colors.grey.withAlpha(100),
+        surfaceContainerLow: Colors.grey.withAlpha(50),
       ),
       scaffoldBackgroundColor: Colors.black,
       textSelectionTheme:
@@ -47,8 +49,8 @@ class AppTheme {
   //=============================================================================
   static final lightTheme = ThemeData(
       brightness: Brightness.light,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.grey.withAlpha(50),
         foregroundColor: Colors.black,
       ),
       iconButtonTheme: IconButtonThemeData(
@@ -60,6 +62,8 @@ class AppTheme {
       colorScheme: ColorScheme.fromSeed(
         seedColor: Colors.white,
         brightness: Brightness.light,
+        surfaceContainerHighest: Colors.blueAccent.withAlpha(50),
+        surfaceContainerLow: Colors.grey.withAlpha(50),
       ),
       scaffoldBackgroundColor: Colors.white,
       textSelectionTheme:
