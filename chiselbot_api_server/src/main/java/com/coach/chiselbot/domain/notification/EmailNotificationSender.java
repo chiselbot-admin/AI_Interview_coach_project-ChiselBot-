@@ -15,7 +15,7 @@ public class EmailNotificationSender implements  NotificationSender{
     public void send(NotifyCommand cmd) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(cmd.getTo());
-        String subject = ( msg.getSubject() != null ) ? cmd.getSubject() : "[No Subject]";
+        String subject = ( cmd.getSubject() != null ) ? cmd.getSubject() : "[No Subject]";
         msg.setSubject(subject);
         msg.setText(cmd.getBody());
         this.mailSender.send(msg);
